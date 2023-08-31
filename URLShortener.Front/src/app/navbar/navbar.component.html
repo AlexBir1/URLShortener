@@ -1,0 +1,98 @@
+<header id="navbarSide" class="navbar-side-half">
+  <div>
+    <div class="mb-5" style="cursor: pointer; color: black">
+      <a (click)="toggle()">
+        <div class="row align-items-center navbar-elem-text">
+          <div class="col-2">
+            <i class="bi bi-list" style="font-size:30px "></i>
+            <div class="link-tip" *ngIf="!isExpanded">
+              <label>Menu</label>
+            </div>
+          </div>
+          <div class="col-8">
+            <label class="link-tip-full-hidden">URL Shortener</label>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div>
+      <div class="row mb-3 navbar-side-elem">
+        <a class="link-dark position-relative" [routerLink]="['/']">
+          <div class="row align-items-center navbar-elem-text">
+            <div class="col-2">
+              <i class="bi bi-house" style="font-size: 30px; color: var(--bs-navbar-text-color);"></i>
+              <div class="link-tip" *ngIf="!isExpanded">
+                <label style="cursor:pointer">Home</label>
+              </div>
+            </div>
+            <div class="col-8">
+              <label class="link-tip-full-hidden">Home</label>
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="row mb-3 navbar-side-elem" *ngIf="(accountService.currentAccount$ | async) === null">
+        <a class="link-dark position-relative" [routerLink]="['/auth']">
+          <div class="row align-items-center navbar-elem-text">
+            <div class="col-2">
+              <i class="bi bi-door-closed" style="font-size: 30px; color: var(--bs-navbar-text-color);"></i>
+              <div class="link-tip" *ngIf="!isExpanded">
+                <label>Sign up<br />Sign in</label>
+              </div>
+            </div>
+            <div class="col-8">
+              <label class="link-tip-full-hidden">Sign up | Sign in</label>
+            </div>
+          </div>
+        </a>
+      </div>
+      <div>
+        <div class="row mb-3 navbar-side-elem">
+          <a class="link-dark position-relative" [routerLink]="['/shortUrls']">
+            <div class="row align-items-center navbar-elem-text">
+              <div class="col-2">
+                <i class="bi bi-link" style="font-size: 30px; color: var(--bs-navbar-text-color);"></i>
+                <div class="link-tip" *ngIf="!isExpanded">
+                  <label>URLs</label>
+                </div>
+              </div>
+              <div class="col-8">
+                <label class="link-tip-full-hidden">URLs</label>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="row mb-3 navbar-side-elem">
+          <a class="link-dark position-relative" [routerLink]="['/about']">
+            <div class="row align-items-center navbar-elem-text">
+              <div class="col-2">
+                <i class="bi bi-info-circle" style="font-size: 30px; color: var(--bs-navbar-text-color);"></i>
+                <div class="link-tip" *ngIf="!isExpanded">
+                  <label>About</label>
+                </div>
+              </div>
+              <div class="col-8">
+                <label class="link-tip-full-hidden">About</label>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="row mb-3 navbar-side-elem " *ngIf="(accountService.currentAccount$ | async) != null">
+          <a class="link-dark position-relative" style="cursor:pointer" (click)="SignOut()">
+            <div class="row align-items-center navbar-elem-text">
+              <div class="col-2">
+                <i class="bi bi-door-open" style="font-size: 30px; color: var(--bs-navbar-text-color);"></i>
+                <div class="link-tip" *ngIf="!isExpanded">
+                  <label>Sign out</label>
+                </div>
+              </div>
+              <div class="col-8">
+                <label class="link-tip-full-hidden">Sign out</label>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

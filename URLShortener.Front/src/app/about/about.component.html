@@ -1,0 +1,46 @@
+<div class="mt-5">
+    <div class="text-center mb-3">
+        <h2>Shortening algorithm</h2>
+    </div>
+    <div class="row justify-content-center" *ngIf="!isEdit">
+        <div class="col-lg-7">
+            <div class="card p-3">
+                <div class="text-left">
+                    {{algorithmInfo.content}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center" *ngIf="isPreview">
+        <div class="col-lg-7">
+            <div class="card p-3">
+                <div class="text-left">
+                    {{newAlgorithmInfo.content}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center" *ngIf="isEdit && !isPreview">
+        <div class="col-lg-7">
+            <div class="card p-3">
+                <textarea id="content" cols="30" rows="10" [(ngModel)]="newAlgorithmInfo.content"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-3">
+        <div class="col-lg-7">
+            <div class="btn-group">
+                <button class="btn btn-success" *ngIf="isEdit" (click)="saveContent()">Save</button>
+                <button class="btn btn-warning" *ngIf="isEdit && !isPreview" (click)="previewModeWhenEdit()">Preview</button>
+                <button class="btn btn-warning" *ngIf="isEdit && isPreview" (click)="previewModeWhenEdit()">Back</button>
+                <button class="btn btn-danger" *ngIf="isEdit" (click)="editMode()">Revert</button>
+                <button class="btn btn-primary" *ngIf="!isEdit && currentAccount?.role === 'Admin'" (click)="editMode()">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+    
+
