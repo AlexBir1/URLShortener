@@ -35,6 +35,7 @@ export class AboutComponent implements OnInit{
 
   editMode(){
     this.isEdit = !this.isEdit;
+    this.isPreview = false;
     this.newAlgorithmInfo.id = this.algorithmInfo.id;
     this.newAlgorithmInfo.content = this.algorithmInfo.content;
     return;
