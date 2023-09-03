@@ -12,6 +12,7 @@ import { AccountService } from './services/account.service';
 import { AuthComponent } from './auth/auth.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AccountComponent } from './account/account.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     NavbarComponent,
     HomeComponent,
     AboutComponent,
-    AuthComponent
+    AuthComponent,
+    AccountComponent
   ],
   imports: [
     BrowserModule,
@@ -31,8 +33,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     RouterModule.forRoot([
       { path: '', component: HomeComponent },
       { path: 'about', component: AboutComponent },
-      { path: 'auth', component: AuthComponent},
-      {path: 'shortUrls', component: ShortUrlComponent}
+      { path: 'auth', component: AuthComponent },
+      { path: 'shortUrls', component: ShortUrlComponent },
+      { path: 'account', component: AccountComponent },
     ]),
   ],
   providers: [AccountService],

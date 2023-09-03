@@ -7,6 +7,7 @@ import { ResponseModel } from '../models/ResponseModel';
 import { AccountModel } from '../models/AccountModel';
 import { SignUpModel } from '../models/SignUpModel';
 import { SignInModel } from '../models/SignInModel';
+import { UpdateAccountModel } from '../models/UpdateAccountModel';
 
 @Injectable()
 export class AccountService {
@@ -100,4 +101,8 @@ export class AccountService {
     this.accountSource.next(accountModel);
   }
 
+  updateAccount(model: UpdateAccountModel){
+    var headers = this.makeJWTHeader();
+    return this.http.put<ResponseModel<AccountModel>>(this.url + 'api/account/' + model.id, model, { headers });
+  }
 }

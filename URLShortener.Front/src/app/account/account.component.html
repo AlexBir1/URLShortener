@@ -1,0 +1,62 @@
+<div class="row mt-5 justify-content-center">
+    <div class="col-lg-6">
+        <div class="card" *ngIf="accountUpdateForm === null">
+            <div class="card-header text-center">
+                <h2>Current account</h2>
+            </div>
+            <div class="card-body">
+                <ul>
+                    <li class="mb-2">
+                        Username: {{currentAccount.username}}
+                    </li>
+                    <li class="mb-2">
+                        Role: {{currentAccount.role}}
+                    </li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <div class="btn-group">
+                    <button class="btn btn-warning" (click)="initAccountUpdateform()">Update</button>
+                </div>
+            </div>
+        </div>
+        <div class="card" *ngIf="accountUpdateForm != null">
+            <div class="card-header text-center">
+                <h2>Update account</h2>
+            </div>
+            <form [formGroup]="accountUpdateForm" (submit)="updateAccount()">
+            <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <input class="form-control" formControlName="username" [class.is-invalid]="accountUpdateForm.controls['username'].dirty && accountUpdateForm.hasError('required','username')" />
+                        <span *ngIf="accountUpdateForm.controls['username'].dirty && accountUpdateForm.hasError('required','username')" class="text-danger bold">Field is required</span>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label">Old Password</label>
+                        <input class="form-control" formControlName="oldPassword" />
+                        <span class="text-black bold">Leave empty if you do not plan to change password.</span>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label">New password</label>
+                        <input class="form-control" formControlName="newPassword"/>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label">Confirm new password</label>
+                        <input class="form-control" formControlName="confirmNewPassword" />
+                      </div>
+                      <div class="mb-3" *ngIf="ErrorList.length > 0">
+                        <ul *ngFor="let it of ErrorList">
+                          <li class="text-danger">{{it}}</li>
+                        </ul>
+                      </div>
+            </div>
+            <div class="card-footer">
+                <div class="btn-group">
+                    <button class="btn btn-success" type="submit">Save</button>
+                    <button class="btn btn-danger" (click)="initAccountUpdateform()">Revert</button>
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
