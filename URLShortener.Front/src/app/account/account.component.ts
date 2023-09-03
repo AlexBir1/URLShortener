@@ -34,6 +34,7 @@ export class AccountComponent implements OnInit {
   }
 
   updateAccount(){
+    this.initErrorList();
     var formValue = this.accountUpdateForm?.value;
     this.accountService.update(formValue.id,formValue).subscribe(x=>{
       if(x.data){
@@ -50,6 +51,10 @@ export class AccountComponent implements OnInit {
     })
   }
 
+  initErrorList(){
+    this.ErrorList = [];
+  }
+
   initAccountUpdateform(){
     if(this.accountUpdateForm === null){
       this.accountUpdateForm = this.formBuilder.group({
@@ -64,7 +69,7 @@ export class AccountComponent implements OnInit {
     }
     else{
       this.accountUpdateForm = null;
-      this.ErrorList = [];
+      this.initErrorList();
     }
   }
 }
