@@ -10,5 +10,6 @@ export class ShortURLInfoModel{
     public url: string = '';
     public origin: string = '';
     public createdBy: string = '';
+    public createdByUserId: string = '';
     public creationDate: Date;
 }

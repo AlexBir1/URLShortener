@@ -73,7 +73,7 @@
           </ul>
         </div>
         <div class="card-footer">
-            <button class="btn btn-danger" *ngIf="currentAccount.role === 'Admin' || currentAccount.username === selectedUrl.createdBy" (click)="deleteUrl(selectedUrl.id)">Delete</button>
+            <button class="btn btn-danger" *ngIf="currentAccount.role === 'Admin' || currentAccount.id === selectedUrl.createdByUserId" (click)="deleteUrl(selectedUrl.id)">Delete</button>
         </div>
       </div>
     </div>

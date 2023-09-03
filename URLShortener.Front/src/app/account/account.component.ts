@@ -4,7 +4,6 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { AccountModel } from '../models/AccountModel';
-import { ResponseModel } from '../models/ResponseModel';
 import { AccountService } from '../services/account.service';
 
 @Component({
@@ -36,9 +35,9 @@ export class AccountComponent implements OnInit {
 
   updateAccount(){
     var formValue = this.accountUpdateForm?.value;
-    this.accountService.updateAccount(formValue).subscribe(x=>{
+    this.accountService.update(formValue.id,formValue).subscribe(x=>{
       if(x.data){
-        this.accountService.saveAccount(x.data);
+        this.accountService.saveCurrentAccount(x.data);
           this.router.navigateByUrl('/').then(x => {
             window.location.reload();
           });

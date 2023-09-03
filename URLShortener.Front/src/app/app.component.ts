@@ -5,7 +5,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ShortURLModel } from '../app/models/ShortURLModel';
 import { AccountService } from './services/account.service';
 import { environment } from 'src/environments/environment';
-import { ResponseModel } from './models/ResponseModel';
+import { BaseResponse } from './services/BaseResponse/BaseResponse';
+import { RedirectService } from './services/redirect.service';
 
 @Component({
   selector: 'app-root',
@@ -14,19 +15,19 @@ import { ResponseModel } from './models/ResponseModel';
 })
 export class AppComponent implements OnInit{
   private BaseUrl: string = environment.API_URL;
-  constructor(private http: HttpClient, private accountService: AccountService){
+  constructor(private http: HttpClient, private accountService: AccountService, private redirectService: RedirectService){
   }
   ngOnInit(): void {
     var pathname = window.location.pathname;
     var correctPath = pathname.replace('/','');
-    this.http.get<ResponseModel<string>>(this.BaseUrl + 'api/ShortURL/TryRedirect/' + correctPath).subscribe(x=>{
+    this.redirectService.tryRedirectToShortenedURL(correctPath).subscribe(x=>{
       if(x.data){
         window.location.href = x.data;
       }
       else
         window.location.href = environment.APP_URL;
     })
-      this.accountService.refreshAccount();
+      this.accountService.refreshCurrentAccount();
   }
   title = 'URLShortener';
 }

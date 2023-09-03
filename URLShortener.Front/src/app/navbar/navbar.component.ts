@@ -24,7 +24,7 @@ export class NavbarComponent implements OnInit{
 
   SignOut() {
     this.setDefaultNavbar();
-    this.accountService.SignOut();
+    this.accountService.signOut();
     this.router.navigateByUrl('/').then(() => window.location.reload());
   }
   showHalfNavbar() {

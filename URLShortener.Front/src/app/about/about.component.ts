@@ -3,8 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { AboutContent } from '../models/AboutContent';
 import { AccountModel } from '../models/AccountModel';
-import { ResponseModel } from '../models/ResponseModel';
+import { AboutService } from '../services/about.service';
 import { AccountService } from '../services/account.service';
+import { BaseResponse } from '../services/BaseResponse/BaseResponse';
 
 @Component({
   selector: 'app-about',
@@ -19,7 +20,7 @@ export class AboutComponent implements OnInit{
   public currentAccount!: AccountModel;
   url: string = environment.API_URL;
 
-  constructor(private http: HttpClient, public accountService: AccountService) {  }
+  constructor(private http: HttpClient, public accountService: AccountService, private aboutService: AboutService) {  }
 
   ngOnInit(){
     this.accountService.currentAccount$.subscribe(x=>{
@@ -46,15 +47,14 @@ export class AboutComponent implements OnInit{
   }
 
   updateContent(){
-    var headers = this.accountService.makeJWTHeader();
-    return this.http.patch<ResponseModel<AboutContent>>(this.url + 'api/AboutContent', this.newAlgorithmInfo, {headers}).subscribe(x=>{
+    return this.aboutService.updateAboutPageContent(this.newAlgorithmInfo).subscribe(x=>{
       this.algorithmInfo = x.data;
       this.isEdit = false;
       this.isPreview = false;
     });
   }
   getContent(){
-    return this.http.get<ResponseModel<AboutContent>>(this.url + 'api/AboutContent').subscribe(x=>
+    return this.aboutService.getAboutPageContent().subscribe(x=>
       {
         this.algorithmInfo = x.data;
       });

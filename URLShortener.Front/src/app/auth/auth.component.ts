@@ -4,10 +4,10 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { AccountModel } from '../models/AccountModel';
-import { ResponseModel } from '../models/ResponseModel';
 import { SignInModel } from '../models/SignInModel';
 import { SignUpModel } from '../models/SignUpModel';
 import { AccountService } from '../services/account.service';
+import { BaseResponse } from '../services/BaseResponse/BaseResponse';
 
 @Component({
   selector: 'app-auth',
@@ -57,9 +57,9 @@ export class AuthComponent implements OnInit{
     this.resultInit();
     if (this.loginForm.valid) {
       this.loginModel = this.loginForm.value;
-      this.accountService.SignIn(this.loginModel).subscribe((x: ResponseModel<AccountModel>) => {
+      this.accountService.signIn(this.loginModel).subscribe((x: BaseResponse<AccountModel>) => {
         if (x.data) {
-          this.accountService.saveAccount(x.data);
+          this.accountService.saveCurrentAccount(x.data);
           this.router.navigateByUrl('/').then(x => {
             window.location.reload();
           });
@@ -78,10 +78,10 @@ export class AuthComponent implements OnInit{
     this.resultInit();
     if (this.registerForm.valid) {
       this.registerModel = this.registerForm.value;
-      this.accountService.SignUp(this.registerModel).subscribe((x: ResponseModel<AccountModel>) =>
+      this.accountService.signUp(this.registerModel).subscribe((x: BaseResponse<AccountModel>) =>
       {
         if (x.data) {
-          this.accountService.saveAccount(x.data);
+          this.accountService.saveCurrentAccount(x.data);
           this.router.navigateByUrl('/').then(x => {
             window.location.reload();
           });

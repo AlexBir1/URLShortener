@@ -3,10 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { AccountModel } from '../models/AccountModel';
-import { ResponseModel } from '../models/ResponseModel';
 import { ShortURLInfoModel } from '../models/ShortURLInfoModel';
 import { ShortURLModel } from '../models/ShortURLModel';
 import { AccountService } from '../services/account.service';
+import { ShortURLService } from '../services/shortURL.service';
 
 @Component({
   selector: 'app-short-url',
@@ -22,7 +22,7 @@ export class ShortUrlComponent implements OnInit{
   public urls: ShortURLModel[] = [];
   public selectedUrl: ShortURLInfoModel | undefined = undefined;
   url: string = environment.API_URL;
-  constructor(private http: HttpClient, public accountService: AccountService, private router: Router){}
+  constructor(private http: HttpClient, public accountService: AccountService, private shortURLService: ShortURLService, private router: Router){}
 
   ngOnInit(): void {
     this.ErrorList = [];
@@ -37,7 +37,7 @@ export class ShortUrlComponent implements OnInit{
   showSelectedURL(id: number){
     if(id === 0)
       return this.selectedUrl = undefined;
-    return this.http.get<ResponseModel<ShortURLInfoModel>>(this.url + 'api/ShortURL/' + id).subscribe(x=>{
+    return this.shortURLService.getDetailed(id).subscribe(x=>{
       if(x.data){
         this.selectedUrl = x.data;
       }
@@ -47,7 +47,7 @@ export class ShortUrlComponent implements OnInit{
     }); 
   }
   getURLs(){
-    return this.http.get<ResponseModel<ShortURLModel[]>>(this.url + 'api/ShortURL').subscribe(x=>{
+    return this.shortURLService.getAll().subscribe(x=>{
       if(x.data){
         this.urls = x.data;
       }
@@ -57,8 +57,7 @@ export class ShortUrlComponent implements OnInit{
     }); 
   }
   deleteUrl(id: number){
-    var headers = this.accountService.makeJWTHeader();
-    return this.http.delete<ResponseModel<ShortURLModel>>(this.url + 'api/ShortURL/' + id, {headers}).subscribe(x=>{
+    return this.shortURLService.delete(id).subscribe(x=>{
       if(x.data){
         var index = this.urls.findIndex(t=>t.id === x.data.id);
         this.urls.splice(index,1);
@@ -77,9 +76,8 @@ export class ShortUrlComponent implements OnInit{
   }
 
   shortenURL(){
-    var headers = this.accountService.makeJWTHeader();
-    var newUrl = new ShortURLModel(0, this.originURL, this.originURL, this.currentAccount.username);
-    return this.http.post<ResponseModel<ShortURLModel>>(this.url + 'api/ShortURL', newUrl, {headers}).subscribe(x=>{
+    var newUrl = new ShortURLModel(0,this.originURL, this.originURL, this.currentAccount.username,this.currentAccount.id);
+    return this.shortURLService.insert(newUrl).subscribe(x=>{
       if(x.data){
         this.shortenedURL = x.data.url;
         this.urls.push(x.data);

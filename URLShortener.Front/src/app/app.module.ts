@@ -13,6 +13,9 @@ import { AuthComponent } from './auth/auth.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AccountComponent } from './account/account.component';
+import { ShortURLService } from './services/shortURL.service';
+import { AboutService } from './services/about.service';
+import { RedirectService } from './services/redirect.service';
 
 @NgModule({
   declarations: [
@@ -38,7 +41,7 @@ import { AccountComponent } from './account/account.component';
       { path: 'account', component: AccountComponent },
     ]),
   ],
-  providers: [AccountService],
+  providers: [AccountService, ShortURLService, AboutService, RedirectService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
