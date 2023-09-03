@@ -11,6 +11,7 @@ namespace URLShortener.DataAccessLayer.Entities
         public int Id { get; set; }
         public string Url { get; set; }
         public string Origin { get; set; }
+        public string CreatedByUserId { get; set; }
         public ShortURLInfo Info { get; set; }
     }
 }

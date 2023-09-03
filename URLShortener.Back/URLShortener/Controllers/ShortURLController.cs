@@ -64,6 +64,7 @@ namespace URLShortener.Controllers
                        Origin = result.Data.Origin,
                        CreatedBy = result.Data.Info.CreatedBy,
                        CreationDate = result.Data.Info.CreationDate,
+                       CreatedByUserId = result.Data.CreatedByUserId,
                     };
                     return new BaseReponse<ShortURLInfoModel>(model, result.Errors);
                 }
@@ -114,6 +115,7 @@ namespace URLShortener.Controllers
                 {
                     Url = model.Url.ShortenURL(model.CreatedBy),
                     Origin = model.Origin,
+                    CreatedByUserId = model.CreatedByUserId,
                     Info = new ShortURLInfo
                     {
                         CreatedBy = model.CreatedBy,

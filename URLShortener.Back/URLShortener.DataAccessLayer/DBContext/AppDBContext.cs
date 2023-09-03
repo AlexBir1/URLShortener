@@ -17,7 +17,7 @@ namespace URLShortener.DataAccessLayer.DBContext
 
         public AppDBContext(DbContextOptions<AppDBContext>options) : base(options)
         {
-            Database.EnsureCreated();
+            Database.Migrate();
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
