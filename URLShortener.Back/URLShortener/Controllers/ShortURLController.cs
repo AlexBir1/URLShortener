@@ -112,7 +112,7 @@ namespace URLShortener.Controllers
 
                 var newUrl = new ShortURL
                 {
-                    Url = model.Url.shorten(),
+                    Url = model.Url.ShortenURL(model.CreatedBy),
                     Origin = model.Origin,
                     Info = new ShortURLInfo
                     {

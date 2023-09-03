@@ -5,18 +5,24 @@ namespace URLShortener.Shortener
 {
     public static class Shortener
     {
-        public static string GetUrlChunk(this long key) =>
+        private static string GetUrlPath(this long key) =>
             WebEncoders.Base64UrlEncode(BitConverter.GetBytes(key));
 
-        public static string shorten(this string value)
+        public static string ShortenURL(this string value, string createdByUsername)
         {
-            byte[] asciiBytes = Encoding.ASCII.GetBytes(value);
+            byte[] urlBytes = Encoding.ASCII.GetBytes(value);
+            byte[] usernameBytes = Encoding.ASCII.GetBytes(createdByUsername);
             long temp = 0;
-            foreach (var item in asciiBytes)
-                temp += item;
-            // key = Tiks + sub of string bytes: that will be always unique
+            foreach (byte b in urlBytes)
+            {
+                temp += b;
+            }
+            foreach (byte b in usernameBytes)
+            {
+                temp += b;
+            }
             var key = DateTime.UtcNow.Ticks + temp;
-            var generatedUrl = "http://localhost:4200/" + key.GetUrlChunk();
+            var generatedUrl = "http://localhost:4200/" + key.GetUrlPath();
             return generatedUrl;
         }
     }
