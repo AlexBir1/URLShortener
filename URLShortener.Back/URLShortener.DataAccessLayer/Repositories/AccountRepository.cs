@@ -42,7 +42,7 @@ namespace URLShortener.DataAccessLayer.Repositories
                     {
                         return new BaseReponse<Account>(account, null);
                     }
-                    return new BaseReponse<Account>(null, result.Errors.Select(x=>x.Description).ToArray());
+                    return new BaseReponse<Account>(null, result.Errors.Select(x => x.Description).ToArray());
                 }
                 return new BaseReponse<Account>(null, null);
             }
@@ -80,7 +80,16 @@ namespace URLShortener.DataAccessLayer.Repositories
         {
             try
             {
-                return new BaseReponse<Account>(null, null);
+                var account = await _userManager.FindByIdAsync(id);
+                if (account == null)
+                {
+                    var errors = new List<string>()
+                    {
+                        new string("Account does not exist.")
+                    };
+                    return new BaseReponse<Account>(null, errors);
+                }
+                return new BaseReponse<Account>(account, null);
             }
             catch (Exception ex)
             {
@@ -99,7 +108,7 @@ namespace URLShortener.DataAccessLayer.Repositories
             try
             {
                 var account = await _userManager.FindByNameAsync(username);
-                if (account != null)
+                if (account == null)
                 {
                     var errors = new List<string>()
                     {
@@ -137,9 +146,9 @@ namespace URLShortener.DataAccessLayer.Repositories
                 else
                 {
                     var result = await _userManager.CreateAsync(Entity, password);
-                    if (result.Succeeded) 
+                    if (result.Succeeded)
                     {
-                        await _userManager.AddToRoleAsync(Entity,role);
+                        await _userManager.AddToRoleAsync(Entity, role);
                         return new BaseReponse<Account>(Entity, null);
                     }
                     return new BaseReponse<Account>(null, result.Errors.Select(x => x.Description).ToArray());
@@ -164,7 +173,7 @@ namespace URLShortener.DataAccessLayer.Repositories
             var rolesList = await _userManager.GetRolesAsync(Account);
             var token = await _jwtService.CreateToken(new JWTTokenProperty(_config["JWT:Key"], int.Parse(_config["JWT:ExpiresInDays"]), Account));
 
-            var accountWithJWT =  new AccountModel()
+            var accountWithJWT = new AccountModel()
             {
                 Id = Account.Id,
                 JWTToken = token,
@@ -251,17 +260,13 @@ namespace URLShortener.DataAccessLayer.Repositories
                         };
                         return new BaseReponse<AccountModel>(accountWithJWT, null);
                     }
-                    var errors = new List<string>
-                    {
-                        new string("Invalid login or password"),
-                    };
-                    return new BaseReponse<AccountModel>(null, errors);
+                    return new BaseReponse<AccountModel>(null, result.Errors.Select(x=>x.Description).ToArray());
                 }
                 else
                 {
                     var errors = new List<string>
                     {
-                        new string("Account does not exist"),
+                        new string("Account already exists"),
                     };
                     return new BaseReponse<AccountModel>(null, errors);
                 }
@@ -278,10 +283,40 @@ namespace URLShortener.DataAccessLayer.Repositories
             }
         }
 
-        public async Task<IBaseResponse<Account>> Update(string id, Account Entity)
+        public async Task<IBaseResponse<Account>> Update(string id, Account Entity, ChangePasswordProperties PassProps)
         {
             try
             {
+                var account = await _userManager.FindByIdAsync(id);
+                if (account != null)
+                {
+                    if(account.UserName == _config["AdminDefaults:Username"] && account.UserName != Entity.UserName)
+                    {
+                        var errors = new List<string>
+                        {
+                            new string("The account`s username cannot be changed.")
+                        };
+                        return new BaseReponse<Account>(null, errors);
+                    }
+                    if (!string.IsNullOrEmpty(PassProps.OldPassword))
+                    {
+                        var resultChangedPassword = await _userManager.ChangePasswordAsync(account, PassProps.OldPassword, PassProps.ConfirmNewPassword);
+                        if (account.UserName != Entity.UserName)
+                        {
+                            var resultChangedUsername = await _userManager.SetUserNameAsync(account, Entity.UserName);
+                        }
+                        if (resultChangedPassword.Succeeded)
+                            return new BaseReponse<Account>(account, null);
+                        return new BaseReponse<Account>(null, resultChangedPassword.Errors.Select(x=>x.Description).ToArray());
+                    }
+                    if (account.UserName != Entity.UserName)
+                    {
+                        var resultChangedUsername = await _userManager.SetUserNameAsync(account, Entity.UserName);
+                        if (resultChangedUsername.Succeeded)
+                            return new BaseReponse<Account>(account, null);
+                    }
+                }
+
                 return new BaseReponse<Account>(null, null);
             }
             catch (Exception ex)

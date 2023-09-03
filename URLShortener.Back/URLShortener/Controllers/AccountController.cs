@@ -86,5 +86,50 @@ namespace URLShortener.Controllers
             }
         }
 
+        [HttpPut("{id}")]
+        [Authorize]
+        public async Task<ActionResult<BaseReponse<AccountModel>>> UpdateAccount(string id, UpdateAccountModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var modelErrors = ModelState.Where(x => x.Value.Errors.Count > 0).SelectMany(x => x.Value.Errors).Select(x => x.ErrorMessage).ToArray();
+                    return new BaseReponse<AccountModel>(null, modelErrors);
+                }
+
+                var newAccount = new Account
+                {
+                    Id = id,
+                    UserName = model.Username,
+                };
+
+                ChangePasswordProperties properties = new ChangePasswordProperties()
+                {
+                    OldPassword = model.OldPassword,
+                    NewPassword = model.NewPassword,
+                    ConfirmNewPassword = model.ConfirmNewPassword,
+                };
+
+                var updateResult = await _uow.Accounts.Update(model.Id, newAccount, properties);
+                if(updateResult.Data is null)
+                {
+                    return new BaseReponse<AccountModel>(null, updateResult.Errors.ToArray());
+                }
+
+                var refreshTokenResult = await _uow.Accounts.RefreshJWT(model.Id);
+                if (refreshTokenResult.Data is null)
+                {
+                    return new BaseReponse<AccountModel>(null, refreshTokenResult.Errors.ToArray());
+                }
+
+                return new BaseReponse<AccountModel>(refreshTokenResult.Data, null);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
     }
 }
