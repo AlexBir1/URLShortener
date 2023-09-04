@@ -16,6 +16,7 @@ import { AccountComponent } from './account/account.component';
 import { ShortURLService } from './services/shortURL.service';
 import { AboutService } from './services/about.service';
 import { RedirectService } from './services/redirect.service';
+import { RedirectComponent } from './redirect/redirect.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { RedirectService } from './services/redirect.service';
     HomeComponent,
     AboutComponent,
     AuthComponent,
-    AccountComponent
+    AccountComponent,
+    RedirectComponent
   ],
   imports: [
     BrowserModule,
@@ -39,6 +41,7 @@ import { RedirectService } from './services/redirect.service';
       { path: 'auth', component: AuthComponent },
       { path: 'shortUrls', component: ShortUrlComponent },
       { path: 'account', component: AccountComponent },
+      { path: 'redirect', component: RedirectComponent },
     ]),
   ],
   providers: [AccountService, ShortURLService, AboutService, RedirectService],

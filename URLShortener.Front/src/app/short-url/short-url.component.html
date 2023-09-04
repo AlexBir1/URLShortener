@@ -3,8 +3,14 @@
         <input type="text" class="form-control" [(ngModel)]="originURL" placeholder="Paste your link here..." />
         <button class="btn btn-primary" (click)="shortenURL()">Shorten</button>
     </div>
-    <div class="mb-2" *ngIf="shortenedURL">
-        <p>Shortened URL: {{shortenedURL}}</p>
+    <div class="mt-3 mb-2" *ngIf="shortenedURL">
+      <div class="row justify-content-center">
+        <div class="col-lg-7 text-center">
+          <div class="p-2" style="background-color:rgb(240, 240, 240); border-radius: 10px; border: 1px solid black">
+            <h5>Shortened URL: {{shortenedURL}}</h5>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="mb-2" *ngIf="ErrorList.length > 0">
         <ul>
