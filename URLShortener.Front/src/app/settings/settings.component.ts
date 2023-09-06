@@ -58,7 +58,7 @@ export class SettingsComponent implements OnInit{
             if(t.data){
               this.currentSettings = t.data;
               var setingsDescs: string[] = [];
-              newCurrentSettings.forEach(x=>setingsDescs.push(x.description));
+              newCurrentSettings.forEach(x=>setingsDescs.push(x.title + ': ' + x.description));
               this.modalComp.openModal('New settings', setingsDescs, 'OK!');
             }
           });
