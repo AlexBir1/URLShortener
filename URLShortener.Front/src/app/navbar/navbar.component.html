@@ -78,6 +78,21 @@
           </a>
         </div>
         <div class="row mb-3 navbar-side-elem" *ngIf="(accountService.currentAccount$ | async) != null">
+          <a class="link-dark position-relative" style="cursor:pointer" [routerLink]="['/settings']">
+            <div class="row align-items-center navbar-elem-text">
+              <div class="col-2">
+                <i class="bi bi-gear" style="font-size: 30px; color: var(--bs-navbar-text-color);"></i>
+                <div class="link-tip" *ngIf="!isExpanded">
+                  <label>Settings</label>
+                </div>
+              </div>
+              <div class="col-8">
+                <label class="link-tip-full-hidden">Settings</label>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="row mb-3 navbar-side-elem" *ngIf="(accountService.currentAccount$ | async) != null">
           <a class="link-dark position-relative" [routerLink]="['/account']">
             <div class="row align-items-center navbar-elem-text">
               <div class="col-2">

@@ -17,6 +17,10 @@ import { ShortURLService } from './services/shortURL.service';
 import { AboutService } from './services/about.service';
 import { RedirectService } from './services/redirect.service';
 import { RedirectComponent } from './redirect/redirect.component';
+import { SettingsComponent } from './settings/settings.component';
+import { SettingService } from './services/setting.service';
+import { ModalContentComponent, ModalsComponent } from './modals/modals.component';
+import { BsModalService, BsModalRef, ModalOptions, ModalModule } from 'ngx-bootstrap/modal';
 
 @NgModule({
   declarations: [
@@ -27,7 +31,9 @@ import { RedirectComponent } from './redirect/redirect.component';
     AboutComponent,
     AuthComponent,
     AccountComponent,
-    RedirectComponent
+    RedirectComponent,
+    SettingsComponent,
+    ModalContentComponent
   ],
   imports: [
     BrowserModule,
@@ -35,6 +41,7 @@ import { RedirectComponent } from './redirect/redirect.component';
     FormsModule,
     ReactiveFormsModule,
     NgxPaginationModule,
+    ModalModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent },
       { path: 'about', component: AboutComponent },
@@ -42,9 +49,10 @@ import { RedirectComponent } from './redirect/redirect.component';
       { path: 'shortUrls', component: ShortUrlComponent },
       { path: 'account', component: AccountComponent },
       { path: 'redirect', component: RedirectComponent },
+      { path: 'settings', component: SettingsComponent },
     ]),
   ],
-  providers: [AccountService, ShortURLService, AboutService, RedirectService],
+  providers: [AccountService, ShortURLService, AboutService, RedirectService, SettingService, BsModalService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

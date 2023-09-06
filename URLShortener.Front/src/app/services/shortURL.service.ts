@@ -12,6 +12,7 @@ import { IShortURLService } from "./interfaces/IShortURLService";
 @Injectable()
 export class ShortURLService implements IShortURLService{
     private url = environment.API_URL;
+
     constructor(private http: HttpClient, private accountService: AccountService) {
     }
     insert(entity: ShortURLModel): Observable<BaseResponse<ShortURLModel>> {
@@ -35,4 +36,5 @@ export class ShortURLService implements IShortURLService{
     getAll(): Observable<IBaseResponse<ShortURLModel[]>> {
         return this.http.get<BaseResponse<ShortURLModel[]>>(this.url + 'api/ShortURL');
     }
+    
 }

@@ -25,7 +25,6 @@ export class ShortUrlComponent implements OnInit{
   constructor(private http: HttpClient, public accountService: AccountService, private shortURLService: ShortURLService, private router: Router){}
 
   ngOnInit(): void {
-    this.ErrorList = [];
     this.accountService.currentAccount$.subscribe(x=>this.currentAccount = x as AccountModel);
     this.getURLs();
   }
@@ -76,6 +75,7 @@ export class ShortUrlComponent implements OnInit{
   }
 
   shortenURL(){
+    this.ErrorList = [];
     var newUrl = new ShortURLModel(0,this.originURL, this.originURL, this.currentAccount.username,this.currentAccount.id);
     return this.shortURLService.insert(newUrl).subscribe(x=>{
       if(x.data){
