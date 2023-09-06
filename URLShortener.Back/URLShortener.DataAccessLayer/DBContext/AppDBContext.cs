@@ -14,6 +14,8 @@ namespace URLShortener.DataAccessLayer.DBContext
         public DbSet<ShortURL> ShortURLs { get; set; }
         public DbSet<ShortURLInfo> ShortURLInfos { get; set; }
         public DbSet<AboutContent> AboutContent { get; set; }
+        public DbSet<Setting> Settings { get; set; }
+        public DbSet<SettingAccount> SettingsAccounts { get; set; }
 
         public AppDBContext(DbContextOptions<AppDBContext>options) : base(options)
         {
@@ -22,6 +24,20 @@ namespace URLShortener.DataAccessLayer.DBContext
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<SettingAccount>(e =>
+            {
+                e.HasKey(x => new { x.Account_Id, x.Setting_Id }); 
+                e.HasOne(x => x.Setting).WithMany(x => x.SettingAccounts).HasForeignKey(x=>x.Setting_Id);
+                e.HasOne(x => x.Account).WithMany(x => x.AccountSettings).HasForeignKey(x => x.Account_Id);
+            });
+            builder.Entity<Setting>(e =>
+            {
+                e.HasKey(x => x.Id);
+                e.HasIndex(x => x.Key).IsUnique();
+                e.Property(x => x.Key).HasColumnType("varchar").HasMaxLength(128);
+                e.Property(x=>x.Title).HasColumnType("varchar").HasMaxLength(128);
+                e.Property(x => x.Description).HasColumnType("varchar(max)");
+            });
             builder.Entity<AboutContent>(e =>
             {
                 e.HasKey(x => x.Id);

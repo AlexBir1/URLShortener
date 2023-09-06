@@ -61,6 +61,7 @@ namespace URLShortener
             builder.Services.AddScoped<JWTService>();
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
             builder.Services.AddScoped<IShortURLRepository, ShortURLRepository>();
+            builder.Services.AddScoped<ISettingRepository, SettingRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
@@ -89,20 +90,27 @@ namespace URLShortener
                     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Account>>();
 
-                    if(await service._db.AboutContent.AsNoTracking().FirstOrDefaultAsync(x=>x.Id == 1) == null)
+                    var aboutContent = new AboutContent()
                     {
+                        Id = 1,
+                        Content = "The algorithm was created for shortening URLs. " +
+                            "First thing to do is to get a URL-address and username from client. Those two values will be separated to ascii-bytes. " +
+                            "In order to ensure that new value will be always unique, the ascii results will be summarized with the current date ticks. " +
+                            "The algorithm then returns a new string, a new URL to be precise. " +
+                            "Redirect to that new address will make a call to the URLShortener API then and the Angular will redirect user to a URL origin address. " +
+                            "If the URL was never shortened, a home page will be opened.",
+                    };
+
+                    if (await service._db.AboutContent.AsNoTracking().FirstOrDefaultAsync(x => x.Id == 1) == null)
                         service._db.AboutContent.Add(new AboutContent
                         {
                             Id = 0,
-                            Content = "The algorithm was created for shortening URLs. " +
-                            "First thing to do is to get a URL-address from client. The it will be separated to ascii-bytes and summarized with current date ticks. " +
-                            "The last action ensures that new path will be unique. " +
-                            "The algorithm then returns a new string, a new URL to be precise. " +
-                            "Redirect to that new address will make a call to the URLShortener API then and the Angular will redirect user to a URL origin address. " +
-                            "If the URL was never shortened, a home page will be opened."
+                            Content = aboutContent.Content
                         });
-                        await service._db.SaveChangesAsync();
-                    }
+                    else
+                        service._db.AboutContent.Update(aboutContent);
+                    await service._db.SaveChangesAsync();
+
                     foreach (var item in RoleHandler.GetAllRoles())
                     {
                         if (!await roleManager.RoleExistsAsync(item.ToString()))

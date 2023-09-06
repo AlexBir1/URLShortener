@@ -19,6 +19,8 @@ namespace URLShortener.DataAccessLayer.Interfaces
 
         IShortURLRepository ShortURLs { get; }
 
+        ISettingRepository Settings { get; }
+
         IConfiguration _config { get; }
 
         bool CanConnect { get; }

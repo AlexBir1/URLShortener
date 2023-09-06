@@ -9,5 +9,6 @@ namespace URLShortener.DataAccessLayer.Entities
 {
     public class Account : IdentityUser
     {
+        public virtual ICollection<SettingAccount> AccountSettings { get; set; }
     }
 }

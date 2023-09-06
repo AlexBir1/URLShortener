@@ -31,9 +31,18 @@ namespace URLShortener.DataAccessLayer.UOW
 
         public SignInManager<Account> SignInManager { get; private set; }
 
+        public ISettingRepository Settings { get; private set; }
+
         public async Task CommitAsync()
         {
-            await _db.SaveChangesAsync();
+            try
+            {
+                await _db.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+
+            }
         }
 
         public UnitOfWork(AppDBContext db, UserManager<Account> userManager, JWTService jwtService, IConfiguration config, SignInManager<Account> signInManager)
@@ -46,6 +55,7 @@ namespace URLShortener.DataAccessLayer.UOW
             CanConnect = _db.Database.CanConnect();
             Accounts = new AccountRepository(_userManager, _config, _jwtService, SignInManager);
             ShortURLs = new ShortURLRepository(_db);
+            Settings = new SettingRepository(_db);
 
         }
     }
