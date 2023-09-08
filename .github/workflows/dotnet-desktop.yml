@@ -76,16 +76,16 @@ jobs:
       uses: microsoft/setup-msbuild@v1.0.2
 
     - name: Restore
-      working-directory: ~/URLShortener.Back
+      working-directory: URLShortener.Back
       run: dotnet restore
 
     - name: Build
-      working-directory: ~/URLShortener.Back
+      working-directory: URLShortener.Back
       run: dotnet build
 
     # Execute all unit tests in the solution
     - name: Execute unit tests
-      working-directory: ~/URLShortener.Back
+      working-directory: URLShortener.Back
       run: dotnet test
 
     # Restore the application to populate the obj folder with RuntimeIdentifiers
