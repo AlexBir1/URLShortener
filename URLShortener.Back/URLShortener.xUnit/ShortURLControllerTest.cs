@@ -1,21 +1,57 @@
 ﻿
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using URLShortener.Controllers;
 using URLShortener.DataAccessLayer.BaseResponse;
 using URLShortener.DataAccessLayer.DBContext;
 using URLShortener.DataAccessLayer.Entities;
 using URLShortener.DataAccessLayer.Interfaces;
+using URLShortener.DataAccessLayer.UOW;
 using URLShortener.Models;
 
 namespace URLShortener.xUnit
 {
     public class ShortURLControllerTest
     {
+
+        [Fact]
+        public async void Insert_NewValue()
+        {
+            var mock = new Mock<IUnitOfWork>();
+            var mockDB = new Mock<AppDBContext>();
+
+            var newUrl = new ShortURL
+            {
+                Id = 0,
+                Url = "newurl",
+                Origin = "newurl.origin",
+                CreatedByUserId = "userid",
+            };
+
+            var insertResponse = new BaseReponse<ShortURL>(newUrl, null);
+
+            mock.Setup(x => x.ShortURLs.Insert(It.IsAny<ShortURL>())).ReturnsAsync(insertResponse);
+
+            var controller = new ShortURLController(mock.Object);
+
+            var model = new ShortURLModel
+            {
+                Id = 0,
+                Url = "newurl",
+                Origin = "newurl.origin",
+                CreatedByUserId = "userid",
+                CreatedBy = "username"
+            };
+
+            var result = await controller.AddUrl(model);
+            var response = result.Value;
+            Assert.NotNull(result);
+        }
+
         [Fact]
         public async void GetAll_IfExists()
         {
             var mock = new Mock<IUnitOfWork>();
-            var mockDB = new Mock<AppDBContext>();
             mock.Setup(x => x.ShortURLs.GetAll()).ReturnsAsync(new BaseReponse<IEnumerable<ShortURL>>(GetTextUrls(), null));
 
             var controller = new ShortURLController(mock.Object);
