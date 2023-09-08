@@ -56,9 +56,8 @@ jobs:
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
 
     env:
-      Solution_Name: URLShortener.sln                         # Replace with your solution name, i.e. MyWpfApp.sln.
-      Test_Project_Path: URLShortener.Back\URLShortener.xUnit\URLShortener.xUnit.csproj                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
-      DOTNET_ROOT: ~\URLShortener.Back
+      Solution_Name: URLShortener.Back/URLShortener.sln                         # Replace with your solution name, i.e. MyWpfApp.sln.
+      Test_Project_Path: URLShortener.Back/URLShortener.xUnit/URLShortener.xUnit.csproj                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
       
     steps:
     - name: Checkout
