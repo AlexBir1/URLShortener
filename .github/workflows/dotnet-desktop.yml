@@ -58,8 +58,6 @@ jobs:
     env:
       Solution_Name: URLShortener.sln                         # Replace with your solution name, i.e. MyWpfApp.sln.
       Test_Project_Path: URLShortener.Back\URLShortener.xUnit\URLShortener.xUnit.csproj                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
-      Wap_Project_Directory: your-wap-project-directory-name    # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
-      Wap_Project_Path: your-wap-project-path                   # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
 
     steps:
     - name: Checkout
@@ -76,6 +74,9 @@ jobs:
     # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Build
+      run: dotnet build
 
     # Execute all unit tests in the solution
     - name: Execute unit tests
