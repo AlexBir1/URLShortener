@@ -58,7 +58,8 @@ jobs:
     env:
       Solution_Name: URLShortener.sln                         # Replace with your solution name, i.e. MyWpfApp.sln.
       Test_Project_Path: URLShortener.Back\URLShortener.xUnit\URLShortener.xUnit.csproj                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
-
+      DOTNET_ROOT: ~\URLShortener.Back
+      
     steps:
     - name: Checkout
       uses: actions/checkout@v3
