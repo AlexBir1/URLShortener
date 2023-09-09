@@ -72,7 +72,7 @@ namespace URLShortener.xUnit
             };
 
             mock.Setup(x => x.Settings.GetAllByAccountId(It.IsAny<string>()))
-                .ReturnsAsync(new BaseReponse<IEnumerable<SettingModel>>(new List<SettingModel>(), errors));
+                .ReturnsAsync(new BaseReponse<IEnumerable<SettingModel>>(new SettingModel[0], errors));
 
             var controller = new SettingController(mock.Object);
 
