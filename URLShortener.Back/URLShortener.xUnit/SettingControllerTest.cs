@@ -76,7 +76,7 @@ namespace URLShortener.xUnit
 
             var controller = new SettingController(mock.Object);
 
-            var result = await controller.GetAccountSettings("accountId");
+            var result = await controller.GetAccountSettings(It.IsAny<string>());
             var response = result.Value;
             Assert.NotNull(result);
             Assert.Empty(response.Data);
