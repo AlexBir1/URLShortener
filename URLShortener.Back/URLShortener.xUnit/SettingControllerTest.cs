@@ -67,7 +67,7 @@ namespace URLShortener.xUnit
         {
             var mock = new Mock<IUnitOfWork>();
 
-            var errors = new List<string>() { 
+            var errors = new string[] { 
                 new string("No value")
             };
 
