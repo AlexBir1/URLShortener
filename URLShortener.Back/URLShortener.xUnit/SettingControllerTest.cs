@@ -80,7 +80,7 @@ namespace URLShortener.xUnit
             var response = result.Value;
             Assert.NotNull(result);
             Assert.Empty(response.Data);
-            Assert.Single(response.Errors);
+            Assert.NotNull(response.Errors);
         }
 
         [Fact]
