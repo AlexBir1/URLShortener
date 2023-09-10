@@ -140,7 +140,7 @@ namespace URLShortener.DataAccessLayer.Repositories
             {
                 var settingsAccounts = await _db.SettingsAccounts.Include(x => x.Setting)
                     .Where(x => x.Account_Id == accountId).ToListAsync();
-                if (settingsAccounts == null)
+                if (settingsAccounts.Count == 0)
                 {
                     var errors = new List<string>()
                     {
