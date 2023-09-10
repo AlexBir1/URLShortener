@@ -8,6 +8,7 @@ import { environment } from 'src/environments/environment';
 import { BaseResponse } from './services/BaseResponse/BaseResponse';
 import { RedirectService } from './services/redirect.service';
 import { SettingService } from './services/setting.service';
+import { ModalsComponent } from './modals/modals.component';
 
 @Component({
   selector: 'app-root',
@@ -19,6 +20,7 @@ export class AppComponent{
   constructor(private http: HttpClient, private accountService: AccountService, private redirectService: RedirectService, private router: Router, private settingsService: SettingService){
     var pathname = window.location.pathname;
     var correctPath = pathname.replace('/','');
+
     
     this.redirectService.tryRedirectToShortenedURL(correctPath).subscribe(x=>{
       if(x.data){

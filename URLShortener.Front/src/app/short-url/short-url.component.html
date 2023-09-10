@@ -6,7 +6,7 @@
     <div class="mt-2 mb-2" *ngIf="shortenedURL">
       <div class="row justify-content-center">
         <div class="col-lg-7 text-center">
-          <div class="p-2" style="background-color:rgb(240, 240, 240); border-radius: 10px; border: 1px solid black">
+          <div class="p-2" style="  background-color: var(--bs-navbar-bg-color); color: var(--bs-navbar-text-color);">
             <h5>Your last shortened URL: {{shortenedURL}}</h5>
           </div>
         </div>
@@ -24,7 +24,7 @@
 </div>
 
 <div class="row justify-content-center mt-3" *ngIf="urls.length > 0 && !selectedUrl">
-    <div class="col-lg-7">
+    <div class="col-lg-9">
       <table class="table table-bordered">
         <thead>
           <tr>
@@ -33,16 +33,16 @@
             <td>#</td>
         </thead>
         <tbody>
-          <tr *ngFor="let item of urls | paginate: {itemsPerPage: 10, currentPage: page, totalItems: urls.length}">
+          <tr *ngFor="let item of urls | paginate: {itemsPerPage: 5, currentPage: page, totalItems: urls.length}">
             <td><a href={{item.url}}>{{item.url}}</a></td>
-            <td><a href={{item.origin}}>{{item.origin}}</a></td>
+            <td><a href={{item.origin}}>{{item.origin | makeTinyLink}}</a></td>
             <td><button class="btn btn-success" (click)="showSelectedURL(item.id)" *ngIf="currentAccount">Details</button></td>
           </tr>
         </tbody>
       </table>
     </div>
     <div class="row justify-content-center">
-      <div class="col-lg-3">
+      <div class="col-lg-4">
         <pagination-controls previousLabel="Back" nextLabel="Next" (pageChange)="changeCurrentPage($event)">
         </pagination-controls>
       </div>
@@ -74,7 +74,7 @@
                 Created by: {{selectedUrl.createdBy}}
               </li>
               <li>
-                Creation date: {{convertDate(selectedUrl.creationDate)}}
+                Creation date: {{selectedUrl.creationDate | toLocaleDateString}}
               </li>
           </ul>
         </div>

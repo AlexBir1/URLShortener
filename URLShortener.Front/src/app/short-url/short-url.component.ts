@@ -11,7 +11,7 @@ import { ShortURLService } from '../services/shortURL.service';
 @Component({
   selector: 'app-short-url',
   templateUrl: './short-url.component.html',
-  styleUrls: ['./short-url.component.css']
+  styleUrls: ['./short-url.component.css'],
 })
 export class ShortUrlComponent implements OnInit{
   public ErrorList: string[] = [];
@@ -66,12 +66,6 @@ export class ShortUrlComponent implements OnInit{
         this.ErrorList = x.errors;
       }
     }); 
-  }
-
-  public convertDate(date: Date): string {
-    var dateToConvert: Date = new Date(date);
-    var dateStr = dateToConvert.toLocaleDateString();
-    return dateStr;
   }
 
   shortenURL(){

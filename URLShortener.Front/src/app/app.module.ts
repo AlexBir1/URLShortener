@@ -21,6 +21,9 @@ import { SettingsComponent } from './settings/settings.component';
 import { SettingService } from './services/setting.service';
 import { ModalContentComponent, ModalsComponent } from './modals/modals.component';
 import { BsModalService, BsModalRef, ModalOptions, ModalModule } from 'ngx-bootstrap/modal';
+import { FormattedDatePipe } from './pipes/convert-date.pipe';
+import { FormattedLinkPipe } from './pipes/convert-link.pipe';
+
 
 @NgModule({
   declarations: [
@@ -33,7 +36,9 @@ import { BsModalService, BsModalRef, ModalOptions, ModalModule } from 'ngx-boots
     AccountComponent,
     RedirectComponent,
     SettingsComponent,
-    ModalContentComponent
+    ModalContentComponent,
+    FormattedDatePipe,
+    FormattedLinkPipe
   ],
   imports: [
     BrowserModule,
