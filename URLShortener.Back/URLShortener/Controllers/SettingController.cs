@@ -41,7 +41,7 @@ namespace URLShortener.Controllers
             try
             {
                 var settings = await _uow.Settings.GetAllByAccountId(accountId);
-                if (settings.Data is null)
+                if (settings.Data.Count() == 0)
                 {
                     return new BaseReponse<IEnumerable<SettingModel>>(new List<SettingModel>().ToArray(), settings.Errors.ToArray());
                 }
