@@ -81,6 +81,27 @@ namespace URLShortener.DataAccessLayer.Repositories
             }
         }
 
+        public async Task<IBaseResponse<ShortURL>> GetOriginByShortenURLPathname(string pathname)
+        {
+            try
+            {
+                var url = await _db.ShortURLs
+                    .FirstAsync(x => x.Url.Contains(pathname));
+
+                return new BaseReponse<ShortURL>(url, null);
+            }
+            catch(Exception ex)
+            {
+                var errors = new List<string>
+                {
+                    ex.Message
+                };
+                if (!string.IsNullOrEmpty(ex.InnerException?.Message))
+                    errors.Add(ex.InnerException.Message);
+                return new BaseReponse<ShortURL>(null, errors);
+            }
+        }
+
         public async Task<IBaseResponse<ShortURL>> Insert(ShortURL Entity)
         {
             try
@@ -96,16 +117,15 @@ namespace URLShortener.DataAccessLayer.Repositories
                 }
 
                 var url = _db.ShortURLs.Add(Entity);
-                await _db.SaveChangesAsync();
-                var info = new ShortURLInfo
-                {
-                    URL_Id = url.Entity.Id,
-                    CreationDate = Entity.Info.CreationDate,
-                    CreatedBy = Entity.Info.CreatedBy,
-                };
+                //await _db.SaveChangesAsync();
+                //var info = new ShortURLInfo
+                //{
+                //    URL_Id = url.Entity.Id,
+                //    CreationDate = Entity.Info.CreationDate,
+                //    CreatedBy = Entity.Info.CreatedBy,
+                //};
 
-                var urlinfo = _db.ShortURLInfos.Add(info);
-                await _db.SaveChangesAsync();
+                //var urlinfo = _db.ShortURLInfos.Add(info);
 
                 return new BaseReponse<ShortURL>(url.Entity, null);
 

@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "URLShortener.DataAccessLaye
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "URLShortener.xUnit", "URLShortener.xUnit\URLShortener.xUnit.csproj", "{2CAC172A-799E-445A-8DA8-5A038DF5E9C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "URLShortener.Models", "URLShortener.Models\URLShortener.Models.csproj", "{A0B7821E-D429-4393-8A12-701329A5C3A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "URLShortener.Models", "URLShortener.Models\URLShortener.Models.csproj", "{A0B7821E-D429-4393-8A12-701329A5C3A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "URLShortener.nUnit", "URLShortener.nUnit\URLShortener.nUnit.csproj", "{8FE88363-E4FE-42A2-AD2D-793E1D5D52CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{A0B7821E-D429-4393-8A12-701329A5C3A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0B7821E-D429-4393-8A12-701329A5C3A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0B7821E-D429-4393-8A12-701329A5C3A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FE88363-E4FE-42A2-AD2D-793E1D5D52CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FE88363-E4FE-42A2-AD2D-793E1D5D52CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FE88363-E4FE-42A2-AD2D-793E1D5D52CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FE88363-E4FE-42A2-AD2D-793E1D5D52CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

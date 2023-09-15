@@ -37,7 +37,7 @@ namespace URLShortener.Controllers
         }
 
         [HttpPost("SignUp")]
-        public async Task<ActionResult<BaseReponse<AccountModel>>> SignUp(SignUpModel model)
+        public async Task<ActionResult<BaseReponse<AccountModel>>> SignUp([FromBody] SignUpModel model)
         {
             try
             {

@@ -80,19 +80,12 @@ namespace URLShortener.Controllers
         {
             try
             {
-                var urls = await _uow.ShortURLs.GetAll();
-                var url = urls.Data.FirstOrDefault(x=>x.Url.Contains(pathname));
+                var url = await _uow.ShortURLs.GetOriginByShortenURLPathname(pathname);
                 if(url == null)
                 {
                     return new BaseReponse<string>(null, null);
                 }
-
-                var originURL = await _uow.ShortURLs.GetById(url.Id);
-
-                if(originURL != null)
-                    return new BaseReponse<string>(originURL.Data.Origin, null);
-                return new BaseReponse<string>(null, null);
-
+                return new BaseReponse<string>(url.Data.Origin, null);
             }
             catch (Exception ex)
             {
@@ -124,6 +117,7 @@ namespace URLShortener.Controllers
                 };
 
                 var result = await _uow.ShortURLs.Insert(newUrl);
+                await _uow.CommitAsync();
 
                 if (result.Data is not null)
                 {
