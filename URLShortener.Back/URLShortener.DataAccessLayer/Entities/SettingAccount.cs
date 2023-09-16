@@ -8,12 +8,12 @@ namespace URLShortener.DataAccessLayer.Entities
 {
     public class SettingAccount
     {
-        public int Setting_Id { get; set; } = 0;
-        public Setting Setting { get; set; } = new Setting();
+        public int Setting_Id { get; set; } 
+        public Setting Setting { get; set; }
 
-        public string Account_Id { get; set; } = string.Empty;
-        public Account Account { get; set; } = new Account();
+        public string Account_Id { get; set; } 
+        public Account Account { get; set; } 
 
-        public bool IsActive { get; set; } = false;
+        public bool IsActive { get; set; } 
     }
 }

@@ -8,10 +8,10 @@ namespace URLShortener.DataAccessLayer.Entities
 {
     public class ShortURL
     {
-        public int Id { get; set; } = 0;
-        public string Url { get; set; } = string.Empty;
-        public string Origin { get; set; } = string.Empty;
-        public string CreatedByUserId { get; set; } = string.Empty;
-        public ShortURLInfo Info { get; set; } = new ShortURLInfo();
+        public int Id { get; set; } 
+        public string Url { get; set; } 
+        public string Origin { get; set; } 
+        public string CreatedByUserId { get; set; } 
+        public ShortURLInfo Info { get; set; }
     }
 }

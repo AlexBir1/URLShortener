@@ -10,16 +10,16 @@ namespace URLShortener.Models
     public class UpdateAccountModel
     {
         [Required(ErrorMessage = "Id is required")]
-        public string Id { get; set; } = string.Empty;
+        public string Id { get; set; } 
 
         [Required(ErrorMessage = "Username is required")]
-        public string Username { get; set; } = string.Empty;
+        public string Username { get; set; }
 
-        public string OldPassword { get; set; } = string.Empty;
+        public string OldPassword { get; set; } 
 
-        public string NewPassword { get; set; } = string.Empty;
+        public string NewPassword { get; set; } 
 
         [Compare("NewPassword", ErrorMessage = "New password and it`s confirmation does not match.")]
-        public string ConfirmNewPassword { get; set; } = string.Empty;
+        public string ConfirmNewPassword { get; set; } 
     }
 }
