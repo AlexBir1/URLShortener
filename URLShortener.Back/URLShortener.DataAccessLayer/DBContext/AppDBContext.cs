@@ -19,7 +19,9 @@ namespace URLShortener.DataAccessLayer.DBContext
 
         public AppDBContext(DbContextOptions<AppDBContext>options) : base(options)
         {
-            Database.Migrate();
+            if(Database.IsRelational())
+                Database.Migrate();
+            Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder builder)

@@ -13,7 +13,6 @@ namespace URLShortener.xUnit
 {
     public class ShortURLControllerTest
     {
-
         [Fact]
         public async void Insert_NewValue()
         {

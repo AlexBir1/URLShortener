@@ -242,7 +242,7 @@ namespace URLShortener.DataAccessLayer.Repositories
             try
             {
                 var setting = await _db.Settings.FirstOrDefaultAsync(x => x.Key == model.Key);
-                if(setting == null)
+                if(setting != null)
                 {
                     var errors = new List<string>()
                     {

@@ -117,15 +117,6 @@ namespace URLShortener.DataAccessLayer.Repositories
                 }
 
                 var url = _db.ShortURLs.Add(Entity);
-                //await _db.SaveChangesAsync();
-                //var info = new ShortURLInfo
-                //{
-                //    URL_Id = url.Entity.Id,
-                //    CreationDate = Entity.Info.CreationDate,
-                //    CreatedBy = Entity.Info.CreatedBy,
-                //};
-
-                //var urlinfo = _db.ShortURLInfos.Add(info);
 
                 return new BaseReponse<ShortURL>(url.Entity, null);
 
