@@ -21,7 +21,8 @@ namespace URLShortener.DataAccessLayer.DBContext
         {
             if(Database.IsRelational())
                 Database.Migrate();
-            Database.EnsureCreated();
+            else
+                Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
