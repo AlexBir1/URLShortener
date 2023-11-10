@@ -13,8 +13,8 @@ using System.Text;
 using System.Threading.Tasks;
 using URLShortener.DataAccessLayer.BaseResponse;
 using URLShortener.DataAccessLayer.Entities;
-using URLShortener.DataAccessLayer.Interfaces;
 using URLShortener.DataAccessLayer.JWT;
+using URLShortener.DataAccessLayer.UOW;
 using URLShortener.Models;
 
 namespace URLShortener.nUnit
@@ -256,7 +256,7 @@ namespace URLShortener.nUnit
                         },
                     }, null);
 
-                    uowMock.Setup(x => x.ShortURLs.GetOriginByShortenURLPathname(It.IsAny<string>())).ReturnsAsync(response);
+                    uowMock.Setup(x => x.ShortURLs.GetByShortenURLPathname(It.IsAny<string>())).ReturnsAsync(response);
 
                     services.AddTransient(_ => uowMock.Object);
                 });
@@ -266,7 +266,7 @@ namespace URLShortener.nUnit
 
             var response = await client.GetAsync("api/ShortURL/TryRedirect/sadsadsa");
             var stringResponse = await response.Content.ReadAsStringAsync();
-            var baseResponse = JsonConvert.DeserializeObject<BaseReponse<string>>(stringResponse);
+            var baseResponse = JsonConvert.DeserializeObject<BaseReponse<ShortURLModel>>(stringResponse);
 
             Assert.NotNull(baseResponse);
             Assert.IsNotNull(response);

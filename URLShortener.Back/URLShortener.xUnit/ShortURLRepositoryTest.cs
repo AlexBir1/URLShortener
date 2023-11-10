@@ -17,6 +17,7 @@ namespace URLShortener.xUnit
         [Fact]
         public async void GetAll_IfExists()
         {
+            //Arrange
             AppDBContext db = new AppDBContext(new DbContextOptionsBuilder<AppDBContext>()
                 .UseInMemoryDatabase("URLShortenerTestDB").Options);
 
@@ -38,10 +39,13 @@ namespace URLShortener.xUnit
             }
 
             await db.SaveChangesAsync();
-
+            //Act
             var urls = await _repo.GetAll();
-
+            //Assert
             Assert.Equal(3, urls.Data.Count());
+
+            await db.Database.EnsureDeletedAsync();
+            await db.DisposeAsync();
         }
 
         [Fact]
@@ -69,6 +73,9 @@ namespace URLShortener.xUnit
             var url = await _repo.GetById(1);
 
             Assert.NotNull(url);
+
+            await db.Database.EnsureDeletedAsync();
+            await db.DisposeAsync();
         }
 
         [Fact]
@@ -97,6 +104,9 @@ namespace URLShortener.xUnit
 
             Assert.NotNull(urls.Data);
             Assert.NotEmpty(urls.Data);
+
+            await db.Database.EnsureDeletedAsync();
+            await db.DisposeAsync();
         }
 
         [Fact]
@@ -124,6 +134,9 @@ namespace URLShortener.xUnit
             var urls = await _repo.Delete(1);
 
             Assert.NotNull(urls.Data);
+
+            await db.Database.EnsureDeletedAsync();
+            await db.DisposeAsync();
         }
     }
 }

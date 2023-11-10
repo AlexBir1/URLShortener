@@ -3,26 +3,32 @@ using System.Text;
 
 namespace URLShortener.Shortener
 {
-    public static class Shortener
+    public static class ShortURLMaker
     {
-        private static string GetUrlPath(this long key) =>
+        private static string GetShortenedUrlPath(long key) =>
             WebEncoders.Base64UrlEncode(BitConverter.GetBytes(key));
 
-        public static string ShortenURL(this string value, string createdByUsername)
+        public static string ShortenURL(string value, string createdByUsername, string baseUrl = "http://localhost:4200/")
         {
             byte[] urlBytes = Encoding.ASCII.GetBytes(value);
             byte[] usernameBytes = Encoding.ASCII.GetBytes(createdByUsername);
-            long temp = 0;
+
+            long urlAndUsernameBytesSum = 0;
+
             foreach (byte b in urlBytes)
             {
-                temp += b;
+                urlAndUsernameBytesSum += b;
             }
+
             foreach (byte b in usernameBytes)
             {
-                temp += b;
+                urlAndUsernameBytesSum += b;
             }
-            var key = DateTime.UtcNow.Ticks + temp;
-            var generatedUrl = "http://localhost:4200/" + key.GetUrlPath();
+
+            var key = DateTime.UtcNow.Ticks + urlAndUsernameBytesSum;
+
+            var generatedUrl = baseUrl + GetShortenedUrlPath(key);
+
             return generatedUrl;
         }
     }

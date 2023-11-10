@@ -10,6 +10,8 @@ using URLShortener.DataAccessLayer.JWT;
 using URLShortener.DataAccessLayer.Repositories;
 using URLShortener.DataAccessLayer.Roles;
 using URLShortener.DataAccessLayer.UOW;
+using URLShortener.Services.Implementations;
+using URLShortener.Services.Interfaces;
 
 namespace URLShortener
 {
@@ -59,11 +61,20 @@ namespace URLShortener
             });
 
             builder.Services.AddScoped<JWTService>();
+
+            builder.Services.AddScoped<IAboutContentRepository, AboutContentRepository>();
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
             builder.Services.AddScoped<IShortURLRepository, ShortURLRepository>();
             builder.Services.AddScoped<ISettingRepository, SettingRepository>();
+
+            builder.Services.AddScoped<IAboutContentService, AboutContentService>();
+            builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<IShortURLService, ShortURLService>();
+            builder.Services.AddScoped<ISettingService, SettingService>();
+
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+            builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
             var app = builder.Build();
             
@@ -101,15 +112,15 @@ namespace URLShortener
                             "If the URL was never shortened, a home page will be opened.",
                     };
 
-                    if (await service._db.AboutContent.AsNoTracking().FirstOrDefaultAsync(x => x.Id == 1) == null)
-                        service._db.AboutContent.Add(new AboutContent
+                    if (await service.DatabaseContext.AboutContent.AsNoTracking().FirstOrDefaultAsync(x => x.Id == 1) == null)
+                        service.DatabaseContext.AboutContent.Add(new AboutContent
                         {
                             Id = 0,
                             Content = aboutContent.Content
                         });
                     else
-                        service._db.AboutContent.Update(aboutContent);
-                    await service._db.SaveChangesAsync();
+                        service.DatabaseContext.AboutContent.Update(aboutContent);
+                    await service.DatabaseContext.SaveChangesAsync();
 
                     foreach (var item in RoleHandler.GetAllRoles())
                     {

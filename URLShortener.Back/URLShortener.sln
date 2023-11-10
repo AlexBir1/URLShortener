@@ -11,7 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "URLShortener.xUnit", "URLSh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "URLShortener.Models", "URLShortener.Models\URLShortener.Models.csproj", "{A0B7821E-D429-4393-8A12-701329A5C3A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "URLShortener.nUnit", "URLShortener.nUnit\URLShortener.nUnit.csproj", "{8FE88363-E4FE-42A2-AD2D-793E1D5D52CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "URLShortener.nUnit", "URLShortener.nUnit\URLShortener.nUnit.csproj", "{8FE88363-E4FE-42A2-AD2D-793E1D5D52CF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "URLShortener.Services", "URLShortener.Services\URLShortener.Services.csproj", "{21E431D9-AA77-4DD3-8C68-3CAA89B03FAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "URLShortener.Shortener", "URLShortener.Shortener\URLShortener.Shortener.csproj", "{82497035-0213-4C43-85C4-0AA10E37D55D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +43,14 @@ Global
 		{8FE88363-E4FE-42A2-AD2D-793E1D5D52CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FE88363-E4FE-42A2-AD2D-793E1D5D52CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8FE88363-E4FE-42A2-AD2D-793E1D5D52CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21E431D9-AA77-4DD3-8C68-3CAA89B03FAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21E431D9-AA77-4DD3-8C68-3CAA89B03FAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21E431D9-AA77-4DD3-8C68-3CAA89B03FAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21E431D9-AA77-4DD3-8C68-3CAA89B03FAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82497035-0213-4C43-85C4-0AA10E37D55D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82497035-0213-4C43-85C4-0AA10E37D55D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82497035-0213-4C43-85C4-0AA10E37D55D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82497035-0213-4C43-85C4-0AA10E37D55D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

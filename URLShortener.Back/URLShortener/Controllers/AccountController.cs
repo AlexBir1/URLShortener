@@ -6,10 +6,11 @@ using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 using URLShortener.DataAccessLayer.BaseResponse;
 using URLShortener.DataAccessLayer.Entities;
-using URLShortener.DataAccessLayer.Interfaces;
 using URLShortener.DataAccessLayer.JWT;
 using URLShortener.DataAccessLayer.Repositories;
+using URLShortener.DataAccessLayer.UOW;
 using URLShortener.Models;
+using URLShortener.Services.Interfaces;
 
 namespace URLShortener.Controllers
 {
@@ -17,22 +18,32 @@ namespace URLShortener.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly IUnitOfWork _uow;
+        private readonly IAccountService _service;
 
-        public AccountController(IUnitOfWork uow)
+        public AccountController(IAccountService service)
         {
-            _uow = uow;
+            _service = service;
         }
 
         [Authorize]
         [HttpGet("refreshToken")]
         public async Task<ActionResult<AccountModel>> RefreshToken()
         {
-            var result = await _uow.Accounts.RefreshJWT(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            if (result.Data is not null)
+            try
+            {
+                var result = await _service.RefreshAccountJWT(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+                if(result.Data is null)
+                {
+                    return BadRequest(result.Errors);
+                }
+
                 return result.Data;
-            else
-                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
             
         }
 
@@ -47,12 +58,7 @@ namespace URLShortener.Controllers
                     return new BaseReponse<AccountModel>(null, modelErrors);
                 }
 
-                var result = await _uow.Accounts.SignUp(model);
-                if (result.Data is null)
-                {
-                    return new BaseReponse<AccountModel>(null, result.Errors.ToArray());
-                }
-                return new BaseReponse<AccountModel>(result.Data, null);
+                return Ok(await _service.SignUp(model));
 
             }
             catch (Exception ex)
@@ -68,16 +74,14 @@ namespace URLShortener.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    var modelErrors = ModelState.Where(x => x.Value.Errors.Count > 0).SelectMany(x => x.Value.Errors).Select(x => x.ErrorMessage).ToArray();
+                    var modelErrors = ModelState
+                        .Where(x => x.Value.Errors.Count > 0)
+                        .SelectMany(x => x.Value.Errors)
+                        .Select(x => x.ErrorMessage).ToArray();
                     return new BaseReponse<AccountModel>(null, modelErrors);
                 }
 
-                var result = await _uow.Accounts.SignIn(model);
-                if(result.Data is null)
-                {
-                    return new BaseReponse<AccountModel>(null, result.Errors.ToArray());
-                }
-                return new BaseReponse<AccountModel>(result.Data, null);
+                return Ok(await _service.SignIn(model));
 
             }
             catch (Exception ex)
@@ -98,32 +102,19 @@ namespace URLShortener.Controllers
                     return new BaseReponse<AccountModel>(null, modelErrors);
                 }
 
-                var newAccount = new Account
-                {
-                    Id = id,
-                    UserName = model.Username,
-                };
-
-                ChangePasswordProperties properties = new ChangePasswordProperties()
-                {
-                    OldPassword = model.OldPassword,
-                    NewPassword = model.NewPassword,
-                    ConfirmNewPassword = model.ConfirmNewPassword,
-                };
-
-                var updateResult = await _uow.Accounts.Update(model.Id, newAccount, properties);
+                var updateResult = await _service.UpdateAccount(id, model);
                 if(updateResult.Data is null)
                 {
                     return new BaseReponse<AccountModel>(null, updateResult.Errors.ToArray());
                 }
 
-                var refreshTokenResult = await _uow.Accounts.RefreshJWT(model.Id);
+                var refreshTokenResult = await _service.RefreshAccountJWT(id);
                 if (refreshTokenResult.Data is null)
                 {
                     return new BaseReponse<AccountModel>(null, refreshTokenResult.Errors.ToArray());
                 }
 
-                return new BaseReponse<AccountModel>(refreshTokenResult.Data, null);
+                return Ok(refreshTokenResult);
 
             }
             catch (Exception ex)

@@ -4,15 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using URLShortener.DataAccessLayer.BaseResponse;
+using URLShortener.DataAccessLayer.Entities;
 using URLShortener.Models;
 
 namespace URLShortener.DataAccessLayer.Interfaces
 {
-    public interface ISettingRepository : IRepository<SettingModel>
+    public interface ISettingRepository : IRepository<Setting>
     {
-        public Task<IBaseResponse<IEnumerable<SettingModel>>> GetAllByAccountId(string accountId);
-        public Task<IBaseResponse<SettingModel>> GetAccountSetting(int settingId, string accountId);
-        public Task<IBaseResponse<SettingModel>> InsertNewSetting(SettingModel model);
-        public Task<IBaseResponse<SettingModel>> UpdateSetting(int id, SettingModel model);
+        public Task<IBaseResponse<IEnumerable<Setting>>> GetAllByAccountId(string accountId);
+        public Task<IBaseResponse<Setting>> GetAccountSetting(int settingId, string accountId);
+        public Task<IBaseResponse<Setting>> InsertGlobalSetting(Setting model);
+        public Task<IBaseResponse<Setting>> UpdateGlobalSetting(int id, Setting model);
     }
 }

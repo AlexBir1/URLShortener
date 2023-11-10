@@ -23,9 +23,7 @@ namespace URLShortener.DataAccessLayer.Repositories
         {
             try
             {
-                var data = await _db.ShortURLs.FirstAsync(url => url.Id == id);
-                var info = await _db.ShortURLInfos.FirstAsync(info => info.URL_Id == id);
-                _db.ShortURLInfos.Remove(info);
+                var data = await _db.ShortURLs.Include(x=>x.Info).FirstAsync(url => url.Id == id);
                 _db.ShortURLs.Remove(data);
                 return new BaseReponse<ShortURL>(data, null);
             }
@@ -45,7 +43,7 @@ namespace URLShortener.DataAccessLayer.Repositories
         {
             try
             {
-                var data = await _db.ShortURLs.ToListAsync();
+                var data = await _db.ShortURLs.Include(x=>x.Info).ToListAsync();
                 return new BaseReponse<IEnumerable<ShortURL>>(data, null);
             }
             catch (Exception ex)
@@ -81,7 +79,7 @@ namespace URLShortener.DataAccessLayer.Repositories
             }
         }
 
-        public async Task<IBaseResponse<ShortURL>> GetOriginByShortenURLPathname(string pathname)
+        public async Task<IBaseResponse<ShortURL>> GetByShortenURLPathname(string pathname)
         {
             try
             {

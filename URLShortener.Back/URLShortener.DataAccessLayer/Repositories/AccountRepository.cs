@@ -185,14 +185,14 @@ namespace URLShortener.DataAccessLayer.Repositories
 
         }
 
-        public async Task<IBaseResponse<AccountModel>> SignIn(SignInModel model)
+        public async Task<IBaseResponse<AccountModel>> SignIn(Account entity, string password)
         {
             try
             {
-                var account = await _userManager.FindByNameAsync(model.Login);
+                var account = await _userManager.FindByNameAsync(entity.UserName);
                 if (account != null)
                 {
-                    var result = await _signInManager.CheckPasswordSignInAsync(account, model.Password, false);
+                    var result = await _signInManager.CheckPasswordSignInAsync(account, password, false);
                     if (result.Succeeded)
                     {
                         var rolesList = await _userManager.GetRolesAsync(account);
@@ -216,7 +216,7 @@ namespace URLShortener.DataAccessLayer.Repositories
                 {
                     var errors = new List<string>
                     {
-                        new string("Account does not exist"),
+                        new string("Invalid login or password"),
                     };
                     return new BaseReponse<AccountModel>(null, errors);
                 }
@@ -233,23 +233,19 @@ namespace URLShortener.DataAccessLayer.Repositories
             }
         }
 
-        public async Task<IBaseResponse<AccountModel>> SignUp(SignUpModel model)
+        public async Task<IBaseResponse<AccountModel>> SignUp(Account entity, string password)
         {
             try
             {
-                var account = await _userManager.FindByNameAsync(model.Username);
+                var account = await _userManager.FindByNameAsync(entity.UserName);
                 if (account == null)
                 {
-                    var newAccount = new Account()
-                    {
-                        UserName = model.Username,
-                    };
-                    var result = await _userManager.CreateAsync(newAccount, model.Password);
+                    var result = await _userManager.CreateAsync(entity, password);
                     if (result.Succeeded)
                     {
-                        var createdAccount = await _userManager.FindByNameAsync(model.Username);
+                        var createdAccount = await _userManager.FindByNameAsync(entity.UserName);
                         await _userManager.AddToRoleAsync(createdAccount, "User");
-                        var rolesList = await _userManager.GetRolesAsync(newAccount);
+                        var rolesList = await _userManager.GetRolesAsync(createdAccount);
                         var token = await _jwtService.CreateToken(new JWTTokenProperty(_config["JWT:Key"], int.Parse(_config["JWT:ExpiresInDays"]), createdAccount));
                         var accountWithJWT = new AccountModel()
                         {

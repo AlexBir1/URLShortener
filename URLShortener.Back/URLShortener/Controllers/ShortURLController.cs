@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using URLShortener.DataAccessLayer.BaseResponse;
 using URLShortener.DataAccessLayer.Entities;
-using URLShortener.DataAccessLayer.Interfaces;
+using URLShortener.DataAccessLayer.UOW;
 using URLShortener.Models;
-using URLShortener.Shortener;
+using URLShortener.Services.Interfaces;
 
 namespace URLShortener.Controllers
 {
@@ -15,11 +15,11 @@ namespace URLShortener.Controllers
     [ApiController]
     public class ShortURLController : ControllerBase
     {
-        private readonly IUnitOfWork _uow;
+        private readonly IShortURLService _service;
 
-        public ShortURLController(IUnitOfWork uow)
+        public ShortURLController(IShortURLService service)
         {
-            _uow = uow;
+            _service = service;
         }
 
         [HttpGet]
@@ -27,22 +27,7 @@ namespace URLShortener.Controllers
         {
             try
             {
-                var result = await _uow.ShortURLs.GetAll();
-                if(result.Data is not null)
-                {
-                    var models = new List<ShortURLModel>();
-                    foreach (var item in result.Data)
-                    {
-                        models.Add(new ShortURLModel 
-                        {
-                            Id = item.Id,
-                            Url = item.Url,
-                            Origin = item.Origin,
-                        });
-                    }
-                    return new BaseReponse<IEnumerable<ShortURLModel>>(models, result.Errors);
-                }
-                return new BaseReponse<IEnumerable<ShortURLModel>>(null, result.Errors);
+                return Ok(await _service.GetAllShortURLs());
             }
             catch (Exception ex)
             {
@@ -54,21 +39,7 @@ namespace URLShortener.Controllers
         {
             try
             {
-                var result = await _uow.ShortURLs.GetById(id);
-                if (result.Data is not null)
-                {
-                    var model = new ShortURLInfoModel()
-                    {
-                       Id = result.Data.Id,
-                       Url = result.Data.Url,
-                       Origin = result.Data.Origin,
-                       CreatedBy = result.Data.Info.CreatedBy,
-                       CreationDate = result.Data.Info.CreationDate,
-                       CreatedByUserId = result.Data.CreatedByUserId,
-                    };
-                    return new BaseReponse<ShortURLInfoModel>(model, result.Errors);
-                }
-                return new BaseReponse<ShortURLInfoModel>(null, result.Errors);
+                return Ok(await _service.GetShortURLById(id));
             }
             catch (Exception ex)
             {
@@ -80,12 +51,7 @@ namespace URLShortener.Controllers
         {
             try
             {
-                var url = await _uow.ShortURLs.GetOriginByShortenURLPathname(pathname);
-                if(url == null)
-                {
-                    return new BaseReponse<string>(null, null);
-                }
-                return new BaseReponse<string>(url.Data.Origin, null);
+                return Ok(await _service.GetShortURLByShortenURLPathname(pathname));
             }
             catch (Exception ex)
             {
@@ -98,38 +64,7 @@ namespace URLShortener.Controllers
         {
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    var modelErrors = ModelState.Where(x => x.Value.Errors.Count > 0).SelectMany(x => x.Value.Errors).Select(x => x.ErrorMessage).ToArray();
-                    return new BaseReponse<ShortURLModel>(null, modelErrors);
-                }
-
-                var newUrl = new ShortURL
-                {
-                    Url = model.Url.ShortenURL(model.CreatedBy),
-                    Origin = model.Origin,
-                    CreatedByUserId = model.CreatedByUserId,
-                    Info = new ShortURLInfo
-                    {
-                        CreatedBy = model.CreatedBy,
-                        CreationDate = DateTime.Today
-                    }
-                };
-
-                var result = await _uow.ShortURLs.Insert(newUrl);
-                await _uow.CommitAsync();
-
-                if (result.Data is not null)
-                {
-                    var urlModel = new ShortURLModel
-                    {
-                        Id = result.Data.Id,
-                        Url = result.Data.Url,
-                        Origin = result.Data.Origin,
-                    };
-                    return new BaseReponse<ShortURLModel>(urlModel, null);
-                }
-                return new BaseReponse<ShortURLModel>(null, result.Errors);
+                return Ok(await _service.InsertShortURL(model));
             }
             catch (Exception ex)
             {
@@ -142,18 +77,7 @@ namespace URLShortener.Controllers
         {
             try
             {
-                var result = await _uow.ShortURLs.Delete(id);
-                if (result.Data is not null)
-                {
-                    await _uow.CommitAsync();
-                    var model = new ShortURLModel 
-                    {
-                        Id = id,
-                        Url = result.Data.Url
-                    };
-                    return new BaseReponse<ShortURLModel>(model, result.Errors);
-                }
-                return new BaseReponse<ShortURLModel>(null, result.Errors);
+                return Ok(await _service.DeleteShortURL(id));
             }
             catch (Exception ex)
             {

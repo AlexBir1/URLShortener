@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using URLShortener.DataAccessLayer.BaseResponse;
 using URLShortener.DataAccessLayer.Entities;
-using URLShortener.DataAccessLayer.Interfaces;
+using URLShortener.DataAccessLayer.UOW;
+using URLShortener.Models;
+using URLShortener.Services.Interfaces;
 
 namespace URLShortener.Controllers
 {
@@ -12,10 +14,10 @@ namespace URLShortener.Controllers
     [ApiController]
     public class AboutContentController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
-        public AboutContentController(IUnitOfWork unitOfWork)
+        private readonly IAboutContentService _service;
+        public AboutContentController(IAboutContentService service)
         {
-            _unitOfWork = unitOfWork;
+            _service = service;
         }
 
         [HttpGet]
@@ -23,11 +25,7 @@ namespace URLShortener.Controllers
         {
             try
             {
-                var result = await _unitOfWork._db.AboutContent.FirstOrDefaultAsync(x => x.Id == 1);
-                if (result != null)
-                    return new BaseReponse<AboutContent>(result, null);
-                else
-                    return new BaseReponse<AboutContent>(null, null);
+                return Ok(await _service.GetContent());
             }
             catch (Exception ex)
             {
@@ -40,9 +38,13 @@ namespace URLShortener.Controllers
         {
             try
             {
-                _unitOfWork._db.AboutContent.Update(model);
-                await _unitOfWork.CommitAsync();
-                return new BaseReponse<AboutContent>(model, null);
+                AboutContentModel newModel = new AboutContentModel()
+                {
+                    Id = model.Id,
+                    Content = model.Content
+                };
+
+                return Ok(await _service.UpdateContent(newModel));
             }
             catch (Exception ex)
             {

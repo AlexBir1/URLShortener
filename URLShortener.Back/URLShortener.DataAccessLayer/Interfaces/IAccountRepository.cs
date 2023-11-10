@@ -13,7 +13,7 @@ namespace URLShortener.DataAccessLayer.Interfaces
     {
         public Task<IBaseResponse<AccountModel>> RefreshJWT(string accountId);
         public Task<IBaseResponse<Account>> GetByUsername(string username);
-        public Task<IBaseResponse<AccountModel>> SignUp(SignUpModel model);
-        public Task<IBaseResponse<AccountModel>> SignIn(SignInModel model);
+        public Task<IBaseResponse<AccountModel>> SignUp(Account entity, string password);
+        public Task<IBaseResponse<AccountModel>> SignIn(Account entity, string password);
     }
 }

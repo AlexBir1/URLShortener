@@ -21,7 +21,7 @@ namespace URLShortener.DataAccessLayer.Repositories
             _db = db;
         }
 
-        public async Task<IBaseResponse<SettingModel>> Delete(int id)
+        public async Task<IBaseResponse<Setting>> Delete(int id)
         {
             try
             {
@@ -32,19 +32,11 @@ namespace URLShortener.DataAccessLayer.Repositories
                     {
                         new string("No settings were found")
                     };
-                    return new BaseReponse<SettingModel>(null, errors);
+                    return new BaseReponse<Setting>(null, errors);
                 }
                 _db.Settings.Remove(setting);
 
-                var settingModel = new SettingModel
-                {
-                    Id = setting.Id,
-                    Key = setting.Key,
-                    Title = setting.Title,
-                    Description = setting.Description,
-                };
-
-                return new BaseReponse<SettingModel>(settingModel, null);
+                return new BaseReponse<Setting>(setting, null);
             }
             catch (Exception ex)
             {
@@ -54,11 +46,11 @@ namespace URLShortener.DataAccessLayer.Repositories
                 };
                 if (!string.IsNullOrEmpty(ex.InnerException?.Message))
                     errors.Add(ex.InnerException.Message);
-                return new BaseReponse<SettingModel>(null, errors);
+                return new BaseReponse<Setting>(null, errors);
             }
         }
 
-        public async Task<IBaseResponse<SettingModel>> GetAccountSetting(int settingId, string accountId)
+        public async Task<IBaseResponse<Setting>> GetAccountSetting(int settingId, string accountId)
         {
             try
             {
@@ -71,20 +63,27 @@ namespace URLShortener.DataAccessLayer.Repositories
                     {
                         new string("No settings were found")
                     };
-                    return new BaseReponse<SettingModel>(null, errors);
+                    return new BaseReponse<Setting>(null, errors);
                 }
 
-                var settingModel = new SettingModel
+                var userSetting = new Setting
                 {
                     Id = setting.Setting_Id,
                     Key = setting.Setting.Key,
                     Title = setting.Setting.Title,
                     Description = setting.Setting.Description,
-                    Account_Id = setting.Account_Id,
-                    IsActive = setting.IsActive,
+                    SettingAccounts = new List<SettingAccount>()
+                    {
+                        new SettingAccount
+                        {
+                            Setting_Id = setting.Setting_Id,
+                            Account_Id = setting.Account_Id,
+                            IsActive = setting.IsActive
+                        }
+                    }
                 };
 
-                return new BaseReponse<SettingModel>(settingModel, null);
+                return new BaseReponse<Setting>(userSetting, null);
             }
             catch (Exception ex)
             {
@@ -94,11 +93,11 @@ namespace URLShortener.DataAccessLayer.Repositories
                 };
                 if (!string.IsNullOrEmpty(ex.InnerException?.Message))
                     errors.Add(ex.InnerException.Message);
-                return new BaseReponse<SettingModel>(null, errors);
+                return new BaseReponse<Setting>(null, errors);
             }
         }
 
-        public async Task<IBaseResponse<IEnumerable<SettingModel>>> GetAll()
+        public async Task<IBaseResponse<IEnumerable<Setting>>> GetAll()
         {
             try
             {
@@ -109,18 +108,10 @@ namespace URLShortener.DataAccessLayer.Repositories
                     {
                         new string("No settings were found")
                     };
-                    return new BaseReponse<IEnumerable<SettingModel>>(null, errors);
+                    return new BaseReponse<IEnumerable<Setting>>(null, errors);
                 }
 
-                var settingsModels = settings.Select(x => new SettingModel
-                {
-                    Id = x.Id,
-                    Key = x.Key,
-                    Title = x.Title,
-                    Description = x.Description,
-                }).ToList();
-
-                return new BaseReponse<IEnumerable<SettingModel>>(settingsModels, null);
+                return new BaseReponse<IEnumerable<Setting>>(settings, null);
             }
             catch (Exception ex)
             {
@@ -130,11 +121,11 @@ namespace URLShortener.DataAccessLayer.Repositories
                 };
                 if (!string.IsNullOrEmpty(ex.InnerException?.Message))
                     errors.Add(ex.InnerException.Message);
-                return new BaseReponse<IEnumerable<SettingModel>>(null, errors);
+                return new BaseReponse<IEnumerable<Setting>>(null, errors);
             }
         }
 
-        public async Task<IBaseResponse<IEnumerable<SettingModel>>> GetAllByAccountId(string accountId)
+        public async Task<IBaseResponse<IEnumerable<Setting>>> GetAllByAccountId(string accountId)
         {
             try
             {
@@ -146,20 +137,27 @@ namespace URLShortener.DataAccessLayer.Repositories
                     {
                         new string("No settings were found")
                     };
-                    return new BaseReponse<IEnumerable<SettingModel>>(null, errors);
+                    return new BaseReponse<IEnumerable<Setting>>(null, errors);
                 }
 
-                var settingsAccountModels = settingsAccounts.Select(x => new SettingModel
+                var settings = settingsAccounts.Select(x => new Setting
                 {
                     Id = x.Setting.Id,
-                    Account_Id = x.Account_Id,
                     Key = x.Setting.Key,
                     Title = x.Setting.Title,
                     Description = x.Setting.Description,
-                    IsActive = x.IsActive,
+                    SettingAccounts = new List<SettingAccount>()
+                    {
+                        new SettingAccount
+                        {
+                            Setting_Id = x.Setting_Id,
+                            Account_Id = x.Account_Id,
+                            IsActive = x.IsActive
+                        }
+                    }
                 }).ToList();
 
-                return new BaseReponse<IEnumerable<SettingModel>>(settingsAccountModels, null);
+                return new BaseReponse<IEnumerable<Setting>>(settings, null);
             }
             catch (Exception ex)
             {
@@ -169,34 +167,26 @@ namespace URLShortener.DataAccessLayer.Repositories
                 };
                 if (!string.IsNullOrEmpty(ex.InnerException?.Message))
                     errors.Add(ex.InnerException.Message);
-                return new BaseReponse<IEnumerable<SettingModel>>(null, errors);
+                return new BaseReponse<IEnumerable<Setting>>(null, errors);
             }
         }
 
-        public async Task<IBaseResponse<SettingModel>> GetById(int id)
+        public async Task<IBaseResponse<Setting>> GetById(int id)
         {
             try
             {
-                var settingAccount = await _db.Settings
+                var setting = await _db.Settings.Include(x=>x.SettingAccounts)
                     .FirstOrDefaultAsync(x => x.Id == id);
-                if (settingAccount == null)
+                if (setting == null)
                 {
                     var errors = new List<string>()
                     {
                         new string("This setting does not exist")
                     };
-                    return new BaseReponse<SettingModel>(null, errors);
+                    return new BaseReponse<Setting>(null, errors);
                 }
 
-                var settingAccountModel = new SettingModel
-                {
-                    Id = id,
-                    Title = settingAccount.Title,
-                    Description = settingAccount.Description,
-                    Key = settingAccount.Key,
-                };
-
-                return new BaseReponse<SettingModel>(settingAccountModel, null);
+                return new BaseReponse<Setting>(setting, null);
             }
             catch (Exception ex)
             {
@@ -206,24 +196,24 @@ namespace URLShortener.DataAccessLayer.Repositories
                 };
                 if (!string.IsNullOrEmpty(ex.InnerException?.Message))
                     errors.Add(ex.InnerException.Message);
-                return new BaseReponse<SettingModel>(null, errors);
+                return new BaseReponse<Setting>(null, errors);
             }
         }
 
-        public async Task<IBaseResponse<SettingModel>> Insert(SettingModel Entity)
+        public async Task<IBaseResponse<Setting>> Insert(Setting Entity)
         {
             try
             {
                 var settingAccount = new SettingAccount
                 {
-                    Account_Id = Entity.Account_Id,
+                    Account_Id = Entity.SettingAccounts.First().Account_Id,
                     Setting_Id = Entity.Id,
-                    IsActive = Entity.IsActive,
+                    IsActive = Entity.SettingAccounts.First().IsActive,
                 };
 
                 await _db.SettingsAccounts.AddAsync(settingAccount);
 
-                return new BaseReponse<SettingModel>(Entity, null);
+                return new BaseReponse<Setting>(Entity, null);
             }
             catch (Exception ex)
             {
@@ -233,11 +223,11 @@ namespace URLShortener.DataAccessLayer.Repositories
                 };
                 if (!string.IsNullOrEmpty(ex.InnerException?.Message))
                     errors.Add(ex.InnerException.Message);
-                return new BaseReponse<SettingModel>(null, errors);
+                return new BaseReponse<Setting>(null, errors);
             }
         }
 
-        public async Task<IBaseResponse<SettingModel>> InsertNewSetting(SettingModel model)
+        public async Task<IBaseResponse<Setting>> InsertGlobalSetting(Setting model)
         {
             try
             {
@@ -248,21 +238,12 @@ namespace URLShortener.DataAccessLayer.Repositories
                     {
                         new string("This setting exists")
                     };
-                    return new BaseReponse<SettingModel>(null, errors);
+                    return new BaseReponse<Setting>(null, errors);
                 }
-                var newSetting = new Setting
-                {
-                    Id = 0,
-                    Key = model.Key,
-                    Title = model.Title,
-                    Description = model.Description,
-                };
 
-                _db.Settings.Add(newSetting);
+                var newSetting = await _db.Settings.AddAsync(model);
 
-                model.Id = newSetting.Id;
-
-                return new BaseReponse<SettingModel>(model, null);
+                return new BaseReponse<Setting>(newSetting.Entity, null);
             }
             catch(Exception ex)
             {
@@ -272,33 +253,36 @@ namespace URLShortener.DataAccessLayer.Repositories
                 };
                 if (!string.IsNullOrEmpty(ex.InnerException?.Message))
                     errors.Add(ex.InnerException.Message);
-                return new BaseReponse<SettingModel>(null, errors);
+                return new BaseReponse<Setting>(null, errors);
             }
         }
 
-        public async Task<IBaseResponse<SettingModel>> Update(int id, SettingModel Entity)
+        public async Task<IBaseResponse<Setting>> Update(int id, Setting Entity)
         {
             try
             {
                 var settingAccount = await _db.SettingsAccounts.Include(x => x.Setting).AsNoTracking()
-                    .FirstOrDefaultAsync(x => x.Setting_Id == id && x.Account_Id == Entity.Account_Id);
+                    .FirstOrDefaultAsync(x => x.Setting_Id == id && x.Account_Id == Entity.SettingAccounts.First().Account_Id);
                 if (settingAccount == null)
                 {
                     var errors = new List<string>()
                     {
                         new string($"Account does not have '{Entity.Key}' setting.")
                     };
-                    return new BaseReponse<SettingModel>(null, errors);
+                    return new BaseReponse<Setting>(null, errors);
                 }
                 var newSettingAccount = new SettingAccount
                 {
-                    Account_Id = Entity.Account_Id,
+                    Account_Id = Entity.SettingAccounts.First().Account_Id,
                     Setting_Id = Entity.Id,
-                    IsActive = Entity.IsActive,
+                    IsActive = Entity.SettingAccounts.First().IsActive,
                 };
 
+                Entity.SettingAccounts.Clear();
+                Entity.SettingAccounts.Add(newSettingAccount);
+
                 _db.SettingsAccounts.Update(newSettingAccount);
-                return new BaseReponse<SettingModel>(Entity, null);
+                return new BaseReponse<Setting>(Entity, null);
             }
             catch (Exception ex)
             {
@@ -308,11 +292,11 @@ namespace URLShortener.DataAccessLayer.Repositories
                 };
                 if (!string.IsNullOrEmpty(ex.InnerException?.Message))
                     errors.Add(ex.InnerException.Message);
-                return new BaseReponse<SettingModel>(null, errors);
+                return new BaseReponse<Setting>(null, errors);
             }
         }
 
-        public async Task<IBaseResponse<SettingModel>> UpdateSetting(int id, SettingModel model)
+        public async Task<IBaseResponse<Setting>> UpdateGlobalSetting(int id, Setting model)
         {
             try
             {
@@ -324,7 +308,7 @@ namespace URLShortener.DataAccessLayer.Repositories
                     {
                         new string("Key of setting cannot be changed")
                     };
-                    return new BaseReponse<SettingModel>(null, errors);
+                    return new BaseReponse<Setting>(null, errors);
                 }
 
                 var newSetting = new Setting
@@ -335,7 +319,7 @@ namespace URLShortener.DataAccessLayer.Repositories
                 };
 
                 _db.Settings.Update(newSetting);
-                return new BaseReponse<SettingModel>(model, null);
+                return new BaseReponse<Setting>(newSetting, null);
             }
             catch (Exception ex)
             {
@@ -345,7 +329,7 @@ namespace URLShortener.DataAccessLayer.Repositories
                 };
                 if (!string.IsNullOrEmpty(ex.InnerException?.Message))
                     errors.Add(ex.InnerException.Message);
-                return new BaseReponse<SettingModel>(null, errors);
+                return new BaseReponse<Setting>(null, errors);
             }
         }
     }

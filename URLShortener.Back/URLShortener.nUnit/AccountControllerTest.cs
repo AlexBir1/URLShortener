@@ -19,8 +19,8 @@ using System.Threading.Tasks;
 using URLShortener.DataAccessLayer.BaseResponse;
 using URLShortener.DataAccessLayer.DBContext;
 using URLShortener.DataAccessLayer.Entities;
-using URLShortener.DataAccessLayer.Interfaces;
 using URLShortener.DataAccessLayer.JWT;
+using URLShortener.DataAccessLayer.UOW;
 using URLShortener.Models;
 
 namespace URLShortener.nUnit
@@ -45,7 +45,7 @@ namespace URLShortener.nUnit
                     }, null);
 
 
-                    uowMock.Setup(x => x.Accounts.SignUp(It.IsAny<SignUpModel>())).ReturnsAsync(response);
+                    uowMock.Setup(x => x.Accounts.SignUp(It.IsAny<Account>(), It.IsAny<string>())).ReturnsAsync(response);
 
                     services.AddTransient(_ => uowMock.Object);
                 });
@@ -87,7 +87,7 @@ namespace URLShortener.nUnit
                     }, null);
 
 
-                    uowMock.Setup(x => x.Accounts.SignIn(It.IsAny<SignInModel>())).ReturnsAsync(response);
+                    uowMock.Setup(x => x.Accounts.SignIn(It.IsAny<Account>(), It.IsAny<string>())).ReturnsAsync(response);
 
                     services.AddTransient(_ => uowMock.Object);
                 });

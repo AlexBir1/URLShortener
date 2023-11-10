@@ -19,25 +19,19 @@ namespace URLShortener.DataAccessLayer.UOW
 
         public IShortURLRepository ShortURLs { get; private set; }
 
-        public IConfiguration _config { get; private set; }
+        public IAboutContentRepository AboutPageContent { get; private set; }
+
+        public ISettingRepository Settings { get; private set; }
 
         public bool CanConnect { get; private set; }
 
-        public AppDBContext _db { get; private set; }
-
-        public UserManager<Account> _userManager { get; private set; }
-
-        public JWTService _jwtService { get; private set; }
-
-        public SignInManager<Account> SignInManager { get; private set; }
-
-        public ISettingRepository Settings { get; private set; }
+        public AppDBContext DatabaseContext { get; private set; }
 
         public async Task CommitAsync()
         {
             try
             {
-                await _db.SaveChangesAsync();
+                await DatabaseContext.SaveChangesAsync();
             }
             catch(Exception ex)
             {
@@ -47,16 +41,13 @@ namespace URLShortener.DataAccessLayer.UOW
 
         public UnitOfWork(AppDBContext db, UserManager<Account> userManager, JWTService jwtService, IConfiguration config, SignInManager<Account> signInManager)
         {
-            _db = db;
-            _userManager = userManager;
-            _jwtService = jwtService;
-            _config = config;
-            SignInManager = signInManager;
-            CanConnect = _db.Database.CanConnect();
-            Accounts = new AccountRepository(_userManager, _config, _jwtService, SignInManager);
-            ShortURLs = new ShortURLRepository(_db);
-            Settings = new SettingRepository(_db);
+            DatabaseContext = db;
+            CanConnect = DatabaseContext.Database.CanConnect();
 
+            Settings = new SettingRepository(db);
+            ShortURLs = new ShortURLRepository(db);
+            Accounts = new AccountRepository(userManager, config, jwtService, signInManager);
+            AboutPageContent = new AboutContentRepository(db);
         }
     }
 }

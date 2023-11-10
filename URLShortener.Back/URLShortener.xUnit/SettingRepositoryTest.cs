@@ -25,24 +25,41 @@ namespace URLShortener.xUnit
 
             ISettingRepository _repo = new SettingRepository(db);
 
-            for (int i = 0; i < 3; i++)
+            List<Setting> expected = new List<Setting>() 
             {
-                await _repo.InsertNewSetting(new SettingModel
+                new Setting
                 {
-                    Id = 0,
-                    Title = i.ToString(),
-                    Description = i.ToString(),
-                    Key = i.ToString(),
-                    IsActive = false,
-                });
+                    Title = "Title",
+                    Key = "Key",
+                    Description = "Description",
+                },
+                new Setting
+                {
+                    Title = "Title",
+                    Key = "Key",
+                    Description = "Description",
+                },
+                new Setting
+                {
+                    Title = "Title",
+                    Key = "Key",
+                    Description = "Description",
+                }
+            };
+
+            foreach(Setting item in expected)
+            {
+                await db.Settings.AddRangeAsync(item);
             }
 
             await db.SaveChangesAsync();
 
             var urls = await _repo.GetAll();
 
-            Assert.Equal(4, urls.Data.Count());
-            db.Dispose();
+            Assert.Equal(expected.Count, urls.Data.Count());
+
+            await db.Database.EnsureDeletedAsync();
+            await db.DisposeAsync();
         }
 
         [Fact]
@@ -55,12 +72,11 @@ namespace URLShortener.xUnit
 
             for (int i = 0; i < 3; i++)
             {
-                await _repo.InsertNewSetting(new SettingModel
+                await _repo.InsertGlobalSetting(new Setting
                 {
                     Title = i.ToString(),
                     Description = i.ToString(),
                     Key = i.ToString(),
-                    IsActive = false,
                 });
             }
 
@@ -68,12 +84,18 @@ namespace URLShortener.xUnit
 
             for (int i = 0; i < 3; i++)
             {
-                await _repo.Insert(new SettingModel
+                await _repo.Insert(new Setting
                 {
-                    Account_Id = "1",
                     Id = i + 2,
-                    IsActive = false,
-                    
+                    SettingAccounts = new List<SettingAccount>
+                    {
+                        new SettingAccount
+                        {
+                            Setting_Id = i + 2,
+                            Account_Id = "1",
+                            IsActive = false,
+                        }
+                    }
                 });
             }
 
@@ -81,8 +103,9 @@ namespace URLShortener.xUnit
 
             var urls = await _repo.GetAllByAccountId("1");
 
-            Assert.Equal(4, urls.Data.Count());
-            db.Dispose();
+            Assert.Equal(2, urls.Data.Count());
+            await db.Database.EnsureDeletedAsync();
+            await db.DisposeAsync();
         }
 
         [Fact]
@@ -95,12 +118,12 @@ namespace URLShortener.xUnit
 
             for (int i = 0; i < 3; i++)
             {
-                await _repo.InsertNewSetting(new SettingModel
+                await _repo.InsertGlobalSetting(new Setting
                 {
                     Title = i.ToString(),
                     Description = i.ToString(),
                     Key = i.ToString(),
-                    IsActive = false,
+
                 });
             }
 
@@ -109,7 +132,8 @@ namespace URLShortener.xUnit
             var url = await _repo.GetById(1);
 
             Assert.NotNull(url);
-            db.Dispose();
+            await db.Database.EnsureDeletedAsync();
+            await db.DisposeAsync();
         }
 
         [Fact]
@@ -120,12 +144,11 @@ namespace URLShortener.xUnit
 
             ISettingRepository _repo = new SettingRepository(db);
 
-                await _repo.InsertNewSetting(new SettingModel
+                await _repo.InsertGlobalSetting(new Setting
                 {
                     Title = "test",
                     Description = "test",
                     Key = "test",
-                    IsActive = false,
                 });
 
             await db.SaveChangesAsync();
@@ -133,7 +156,8 @@ namespace URLShortener.xUnit
             var url = await _repo.GetById(1);
 
             Assert.NotNull(url);
-            db.Dispose();
+            await db.Database.EnsureDeletedAsync();
+            await db.DisposeAsync();
         }
 
         [Fact]
@@ -144,21 +168,28 @@ namespace URLShortener.xUnit
 
             ISettingRepository _repo = new SettingRepository(db);
 
-            await _repo.InsertNewSetting(new SettingModel
+            await _repo.InsertGlobalSetting(new Setting
             {
                 Title = "test",
                 Description = "test",
                 Key = "test",
-                IsActive = false,
             });
 
             await db.SaveChangesAsync();
 
-            await _repo.Insert(new SettingModel
+            await _repo.Insert(new Setting
             {
-                Account_Id = "1",
+                
                 Id = 1,
-                IsActive = false,
+                SettingAccounts = new List<SettingAccount>
+                    {
+                        new SettingAccount
+                        {
+                            Setting_Id = 1,
+                            Account_Id = "1",
+                            IsActive = false,
+                        }
+                    }
 
             });
 
@@ -167,7 +198,8 @@ namespace URLShortener.xUnit
             var urls = await _repo.GetAllByAccountId("1");
 
             Assert.NotEmpty(urls.Data);
-            db.Dispose();
+            await db.Database.EnsureDeletedAsync();
+            await db.DisposeAsync();
         }
     }
 }

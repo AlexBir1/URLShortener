@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using URLShortener.DataAccessLayer.BaseResponse;
-using URLShortener.DataAccessLayer.Interfaces;
+using URLShortener.DataAccessLayer.UOW;
 using URLShortener.Models;
+using URLShortener.Services.Interfaces;
 
 namespace URLShortener.Controllers
 {
@@ -10,11 +11,11 @@ namespace URLShortener.Controllers
     [ApiController]
     public class SettingController : ControllerBase
     {
-        private readonly IUnitOfWork _uow;
+        private readonly ISettingService _service;
 
-        public SettingController(IUnitOfWork uow)
+        public SettingController(ISettingService service)
         {
-            _uow = uow;
+            _service = service;
         }
 
         [HttpGet]
@@ -22,12 +23,7 @@ namespace URLShortener.Controllers
         {
             try
             {
-                var settings = await _uow.Settings.GetAll();
-                if (settings.Data.Count() == 0)
-                {
-                    return new BaseReponse<IEnumerable<SettingModel>>(new SettingModel[0], null);
-                }
-                return new BaseReponse<IEnumerable<SettingModel>>(settings.Data, null);
+                return Ok(await _service.GetAllGlobalSettings());
             }
             catch (Exception ex)
             {
@@ -40,12 +36,7 @@ namespace URLShortener.Controllers
         {
             try
             {
-                var settings = await _uow.Settings.GetAllByAccountId(accountId);
-                if (settings.Data.Count() == 0)
-                {
-                    return new BaseReponse<IEnumerable<SettingModel>>(new List<SettingModel>().ToArray(), settings.Errors.ToArray());
-                }
-                return new BaseReponse<IEnumerable<SettingModel>>(settings.Data, null);
+                return Ok(await _service.GetAllUserSettings(accountId));
             }
             catch (Exception ex)
             {
@@ -58,12 +49,7 @@ namespace URLShortener.Controllers
         {
             try
             {
-                var settings = await _uow.Settings.GetAccountSetting(settingId, accountId);
-                if (settings.Data == null)
-                {
-                    return new BaseReponse<SettingModel>(null, settings.Errors.ToArray());
-                }
-                return new BaseReponse<SettingModel>(settings.Data, null);
+                return Ok(await _service.GetUserSettingById(accountId, settingId));
             }
             catch (Exception ex)
             {
@@ -76,13 +62,7 @@ namespace URLShortener.Controllers
         {
             try
             {
-                foreach (var setting in settings)
-                {
-                    await _uow.Settings.Insert(setting);
-                }
-                await _uow.CommitAsync();
-
-                return new BaseReponse<IEnumerable<SettingModel>>(settings.ToArray(), null);
+                return Ok(await _service.InsertUserSettings(accountId, settings));
             }
             catch (Exception ex)
             {
@@ -95,14 +75,7 @@ namespace URLShortener.Controllers
         {
             try
             {
-                foreach (var setting in settings)
-                {
-                    await _uow.Settings.Update(setting.Id,setting);
-                }
-
-                await _uow.CommitAsync();
-
-                return new BaseReponse<IEnumerable<SettingModel>>(settings.ToArray(), null);
+                return Ok(await _service.UpdateUserSettings(accountId, settings));
             }
             catch (Exception ex)
             {

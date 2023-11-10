@@ -8,8 +8,9 @@ using URLShortener.DataAccessLayer.Entities;
 
 namespace URLShortener.DataAccessLayer.Interfaces
 {
-    public interface IShortURLRepository : IRepository<ShortURL>
+    public interface IAboutContentRepository
     {
-        public Task<IBaseResponse<ShortURL>> GetByShortenURLPathname(string pathname);
+        public Task<IBaseResponse<AboutContent>> GetContent();
+        public Task<IBaseResponse<AboutContent>> UpdateContent(AboutContent entity);
     }
 }
